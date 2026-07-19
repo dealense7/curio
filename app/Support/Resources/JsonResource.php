@@ -1,0 +1,201 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Support\Resources;
+
+use App\Support\Resources\Contracts\TransformableContract;
+use App\Support\Resources\Contracts\UuidAsPrimaryContract;
+use App\Support\Resources\Responses\ResourceResponse;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource as BaseResource;
+use Illuminate\Support\Arr;
+use ReflectionClass;
+
+use function array_keys;
+use function array_merge;
+use function array_merge_recursive;
+use function is_null;
+use function method_exists;
+use function ucfirst;
+
+abstract class JsonResource extends BaseResource
+{
+    use TransformsData;
+
+    /**
+     * @var array<class-string, string>
+     */
+    private static array $resourceTypeCache = [];
+
+    protected array $includedRelations = [];
+
+    protected string $dataWrapper = 'data';
+
+    protected string $resourceType = 'object';
+
+    public function getTransformed(): array
+    {
+        if ($this->resource instanceof TransformableContract) {
+            return $this->transformToApi($this->resource);
+        }
+
+        return [];
+    }
+
+    public function toArray($request): array
+    {
+        $data = $this->getResourceData();
+        $relationsData = $this->getRelationsData();
+
+        if (! empty($relationsData)) {
+            $data['relationships'] = $relationsData;
+        }
+
+        if ($this->getDataWrapper() !== '') {
+            return [$this->getDataWrapper() => $data];
+        }
+
+        return $data;
+    }
+
+    public function getDataWrapper(): string
+    {
+        return $this->dataWrapper;
+    }
+
+    public function setDataWrapper(string $dataWrapper): void
+    {
+        $this->dataWrapper = $dataWrapper;
+    }
+
+    public function withRelations(array $relations): self
+    {
+        $this->includedRelations = array_merge($this->includedRelations, $relations);
+
+        return $this;
+    }
+
+    public function toResponse($request): JsonResponse
+    {
+        return (new ResourceResponse($this))->toResponse($request);
+    }
+
+    public function withResourceType(string $resourceType): self
+    {
+        $this->resourceType = $resourceType;
+
+        return $this;
+    }
+
+    public function appendAdditional(array $data): self
+    {
+        $this->additional = array_merge_recursive($this->additional, $data);
+
+        return $this;
+    }
+
+    protected function getResourceData(): array
+    {
+        if ($this->resource instanceof TransformableContract) {
+            return [
+                'id' => $this->getResourceId(),
+                'type' => $this->getResourceType(),
+                'attributes' => $this->getTransformed(),
+            ];
+        }
+
+        if (is_null($this->resource)) {
+            return [
+                'id' => null,
+                'type' => null,
+                'attributes' => [],
+            ];
+        }
+
+        return [
+            'id' => $this->getResourceId(),
+            'type' => $this->getResourceType(),
+            'attributes' => $this->getTransformed(),
+        ];
+    }
+
+    protected function getRelationsData(): array
+    {
+        if (is_null($this->resource)) {
+            return [];
+        }
+
+        $relations = [];
+        $relationsChain = self::undot($this->includedRelations);
+
+        foreach ($relationsChain as $currentRelation => $remainingRelationChain) {
+            $methodName = 'include'.ucfirst($currentRelation);
+
+            if (! method_exists($this, $methodName)) {
+                throw new Exception('Relation method does not exist: '.$methodName);
+            }
+
+            $remainingRelations = [];
+
+            if (! empty($remainingRelationChain)) {
+                $remainingRelations = array_keys(Arr::dot($remainingRelationChain));
+            }
+
+            /** @var self $resource */
+            $resource = $this->$methodName();
+
+            if (is_null($resource)) {
+                continue;
+            }
+
+            $resource->withRelations($remainingRelations);
+
+            $relations[$currentRelation] = $resource;
+        }
+
+        return $relations;
+    }
+
+    protected function getResourceType(): string
+    {
+        if (! $this->resource instanceof TransformableContract) {
+            return $this->resourceType;
+        }
+
+        $modelClass = $this->resource->getModel()::class;
+
+        if (isset(self::$resourceTypeCache[$modelClass])) {
+            return self::$resourceTypeCache[$modelClass];
+        }
+
+        $reflection = new ReflectionClass($this->resource->getModel());
+
+        return self::$resourceTypeCache[$modelClass] = $reflection->getShortName();
+    }
+
+    protected function getResourceId(): string|int|null
+    {
+        if ($this->resource instanceof UuidAsPrimaryContract) {
+            return $this->resource->getUuidString();
+        }
+
+        if ($this->resource instanceof TransformableContract) {
+            return (int) $this->resource->getKey();
+        }
+
+        return null;
+    }
+
+    private static function undot(array $array): array
+    {
+        $result = [];
+
+        foreach ($array as $item) {
+            Arr::set($result, $item, []);
+        }
+
+        return $result;
+    }
+}

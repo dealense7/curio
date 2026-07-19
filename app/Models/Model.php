@@ -6,11 +6,13 @@ namespace App\Models;
 
 use App\Models\Concerns\HasPublicId;
 use App\Support\Collection;
+use App\Support\Resources\Contracts\TransformableContract;
+use App\Support\Resources\Contracts\UuidAsPrimaryContract;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
-abstract class Model extends EloquentModel
+abstract class Model extends EloquentModel implements TransformableContract, UuidAsPrimaryContract
 {
     use HasPublicId;
     use SoftDeletes;
@@ -45,6 +47,21 @@ abstract class Model extends EloquentModel
     public function getPublicId(): string
     {
         return (string) $this->getAttribute('public_id');
+    }
+
+    public function getUuid(): string
+    {
+        return $this->getPublicId();
+    }
+
+    public function getUuidString(): string
+    {
+        return $this->getPublicId();
+    }
+
+    public function getModel(): static
+    {
+        return $this;
     }
 
     public function getCreatedAt(): ?Carbon

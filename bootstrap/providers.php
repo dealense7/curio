@@ -1,9 +1,11 @@
 <?php
 
 use App\Providers\AppServiceProvider;
+use App\Providers\BindingServiceProvider;
 use App\Providers\ModelConventionServiceProvider;
 
 return [
     AppServiceProvider::class,
+    BindingServiceProvider::class,
     ModelConventionServiceProvider::class,
 ];

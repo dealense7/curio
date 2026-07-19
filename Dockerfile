@@ -4,16 +4,19 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     unzip \
+    pkg-config \
     libpq-dev \
     libzip-dev \
     libicu-dev \
     libonig-dev \
     zip \
+    && pecl install redis \
     && docker-php-ext-install \
         pdo_pgsql \
         pgsql \
         zip \
         intl \
+    && docker-php-ext-enable redis \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
