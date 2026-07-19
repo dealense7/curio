@@ -1,0 +1,16 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/nesbot/carbon/extension.neon
+
+parameters:
+    paths:
+        - app
+        - config
+        - tests
+
+    level: 5 # Keep this low to avoid noise (1 = real type issues only)
+
+    excludePaths:
+        - tests/*
+        - app/Support/Testing/*
+        - app/Support/Collection.php

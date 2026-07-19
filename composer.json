@@ -33,6 +33,11 @@
         }
     },
     "scripts": {
+        "phpcs": [
+            "vendor/bin/pint app/ config/ tests/ --preset=laravel --test --ansi",
+            "vendor/bin/phpstan analyse --memory-limit 1G"
+        ],
+        "phpcbf": "vendor/bin/pint app/ config/ tests/ --preset=laravel --ansi",
         "setup": [
             "composer install",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
