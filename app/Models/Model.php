@@ -7,11 +7,13 @@ namespace App\Models;
 use App\Models\Concerns\HasPublicId;
 use App\Support\Collection;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 abstract class Model extends EloquentModel
 {
     use HasPublicId;
+    use SoftDeletes;
 
     /**
      * Internal keys and audit columns must never be mass assignable by default.
