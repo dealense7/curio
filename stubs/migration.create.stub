@@ -1,0 +1,39 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Support\Database\BlueprintMacros;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('{{ table }}', function (Blueprint $table) {
+            /** @var Blueprint&BlueprintMacros $table */
+            $table->id();
+            $table->publicId();
+            $table->timestampsTz();
+
+            // Optional convention helpers from ModelConventionServiceProvider:
+            // $table->companyKey(); // Adds required company_id foreign key with restrictOnDelete().
+            // $table->companyKey(true); // Adds nullable company_id foreign key with restrictOnDelete().
+            // $table->archivable(); // Adds nullable archived_at timestamp and archive index.
+            // $table->optimisticLock(); // Adds unsigned version column for optimistic concurrency checks.
+            // $table->actorColumns(); // Adds nullable created_by and updated_by foreign keys with nullOnDelete().
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('{{ table }}');
+    }
+};

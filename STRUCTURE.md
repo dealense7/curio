@@ -54,6 +54,7 @@ This file defines the target repository structure and architectural rules for AI
 - Services orchestrate repositories, authorization, validation flow, transactions, and domain behavior.
 - Do not duplicate the same query logic across controllers and services.
 - Prefer transactions in services when a use case touches multiple repositories or models.
+- Prefer repository methods or filters for archived-state selection instead of model query scopes.
 
 ## Cache Repository Rules
 - Use `app/CacheRepositories` only for stable read-heavy queries.

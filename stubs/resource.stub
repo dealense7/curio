@@ -1,0 +1,25 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use App\Http\Resources\JsonResource;
+use Illuminate\Http\Request;
+
+class {{ class }} extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'public_id' => $this->publicId(),
+            'created_at' => $this->dateTime($this->resource->getCreatedAt()),
+            'updated_at' => $this->dateTime($this->resource->getUpdatedAt()),
+        ];
+    }
+}

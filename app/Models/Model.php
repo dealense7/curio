@@ -4,51 +4,31 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Concerns\Archivable;
 use App\Models\Concerns\HasPublicId;
 use App\Support\Collection;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Support\Carbon;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+abstract class Model extends EloquentModel
 {
-    use Archivable;
-    /** @use HasFactory<UserFactory> */
-    use HasFactory;
     use HasPublicId;
-    use Notifiable;
 
     /**
-     * Internal identifiers should never be mass assignable.
+     * Internal keys and audit columns must never be mass assignable by default.
      *
      * @var list<string>
      */
     protected $guarded = [
         'id',
         'public_id',
+        'company_id',
+        'version',
+        'created_by',
+        'updated_by',
         'created_at',
         'updated_at',
+        'archived_at',
     ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
-        ];
-    }
 
     public function getRouteKeyName(): string
     {
@@ -63,16 +43,6 @@ class User extends Authenticatable
     public function getPublicId(): string
     {
         return (string) $this->getAttribute('public_id');
-    }
-
-    public function getName(): string
-    {
-        return (string) $this->getAttribute('name');
-    }
-
-    public function getEmail(): string
-    {
-        return (string) $this->getAttribute('email');
     }
 
     public function getCreatedAt(): ?Carbon
