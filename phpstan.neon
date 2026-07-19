@@ -13,4 +13,4 @@ parameters:
     excludePaths:
         - tests/*
         - app/Support/Testing/*
-        - app/Support/Collection.php
+        - app/Support/Collection.php (?)
