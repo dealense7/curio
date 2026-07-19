@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 #[UseFactory(CountryFactory::class)]
 class Country extends Model
 {
+    public const string PERMISSIONS_SCOPE = 'countries';
+
     protected $table = 'countries';
 
     /**

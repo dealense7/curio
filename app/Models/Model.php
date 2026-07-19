@@ -71,4 +71,9 @@ abstract class Model extends EloquentModel
     {
         return new Collection($models);
     }
+
+    public static function getPermission(string $permission): string
+    {
+        return static::PERMISSIONS_SCOPE.'.'.$permission;
+    }
 }
