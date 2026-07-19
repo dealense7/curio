@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+use App\Console\Commands\CreateInternalOauthClient;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
         then: static function (): void {
             Route::middleware('api')
                 ->prefix('api')
+                ->group(base_path('routes/auth.php'));
+
+            Route::middleware('api')
+                ->prefix('api')
                 ->group(base_path('routes/general.php'));
 
             Route::middleware('api')
@@ -27,6 +34,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => PermissionMiddleware::class,
         ]);
     })
+    ->withCommands([
+        CreateInternalOauthClient::class,
+    ])
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),

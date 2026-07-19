@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Admin\Country\CountryController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth')
+Route::middleware('auth:api')
     ->prefix('admin')
     ->name('admin.')
     ->group(function (): void {

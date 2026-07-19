@@ -12,7 +12,7 @@ class ErrorResource extends JsonResource
 {
     public static $wrap = null;
 
-    public function __construct(array $resource)
+    public function __construct(array|string $resource)
     {
         $this->resource = $resource;
         $this->setDataWrapper('');
@@ -23,7 +23,7 @@ class ErrorResource extends JsonResource
         $result = array_merge(
             [
                 'errors' => [
-                    'general' => $this->resource,
+                    'general' => is_array($this->resource) ? $this->resource : [$this->resource],
                 ],
             ],
             $this->additional ?? [],

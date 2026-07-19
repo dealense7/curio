@@ -61,12 +61,12 @@ class Country extends Model
 
     public function getIso2(): string
     {
-        return (string)$this->getAttribute('iso2');
+        return (string) $this->getAttribute('iso2');
     }
 
     public function getIso3(): string
     {
-        return (string)$this->getAttribute('iso3');
+        return (string) $this->getAttribute('iso3');
     }
 
     public function getNumericCode(): ?string
@@ -79,7 +79,7 @@ class Country extends Model
 
     public function getName(): string
     {
-        return (string)$this->getAttribute('name');
+        return (string) $this->getAttribute('name');
     }
 
     public function getOfficialName(): ?string
@@ -92,11 +92,11 @@ class Country extends Model
 
     public function getIsActive(): bool
     {
-        return (bool)$this->getAttribute('is_active');
+        return (bool) $this->getAttribute('is_active');
     }
 
     public function getSortOrder(): int
     {
-        return (int)$this->getAttribute('sort_order');
+        return (int) $this->getAttribute('sort_order');
     }
 }

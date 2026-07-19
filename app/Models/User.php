@@ -6,7 +6,10 @@ namespace App\Models;
 
 use App\Models\Concerns\Archivable;
 use App\Models\Concerns\HasPublicId;
+use App\Support\Auth\Passport\Contracts\UserContract;
 use App\Support\Collection;
+use App\Support\Resources\Contracts\TransformableContract;
+use App\Support\Resources\Contracts\UuidAsPrimaryContract;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -14,13 +17,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Laravel\Passport\HasApiTokens;
+use Laravel\Passport\Token;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements TransformableContract, UserContract, UuidAsPrimaryContract
 {
     use Archivable;
+    use HasApiTokens;
     /** @use HasFactory<UserFactory> */
     use HasFactory;
     use HasPublicId;
@@ -52,6 +58,25 @@ class User extends Authenticatable
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::updated(static function (self $user): void {
+            if ($user->wasChanged(['password', 'archived_at', 'email_verified_at'])) {
+                $user->revokeAccessTokens();
+            }
+        });
+    }
+
+    public function revokeAccessTokens(): void
+    {
+        $this->tokens()
+            ->where('revoked', false)
+            ->each(static function (Token $token): void {
+                $token->revoke();
+                $token->refreshToken?->revoke();
+            });
+    }
+
     public function getRouteKeyName(): string
     {
         return 'public_id';
@@ -65,6 +90,32 @@ class User extends Authenticatable
     public function getPublicId(): string
     {
         return (string) $this->getAttribute('public_id');
+    }
+
+    public function getIdentifier(): string
+    {
+        return (string) $this->getKey();
+    }
+
+    public function isEligibleForAuthentication(): bool
+    {
+        return $this->getAttribute('archived_at') === null
+            && $this->getAttribute('email_verified_at') !== null;
+    }
+
+    public function getUuid(): string
+    {
+        return $this->getPublicId();
+    }
+
+    public function getUuidString(): string
+    {
+        return $this->getPublicId();
+    }
+
+    public function getModel(): static
+    {
+        return $this;
     }
 
     public function getName(): string

@@ -18,6 +18,33 @@ sync_env_value() {
     fi
 }
 
+read_env_value() {
+    key="$1"
+    file_path="$2"
+
+    if [ ! -f "$file_path" ]; then
+        return
+    fi
+
+    grep "^${key}=" "$file_path" | head -n 1 | cut -d '=' -f 2-
+}
+
+sync_env_value_in_file() {
+    key="$1"
+    value="$2"
+    file_path="$3"
+
+    if [ -z "$value" ] || [ ! -f "$file_path" ]; then
+        return
+    fi
+
+    if grep -q "^${key}=" "$file_path"; then
+        sed -i "s#^${key}=.*#${key}=${value}#" "$file_path"
+    else
+        printf '\n%s=%s\n' "$key" "$value" >> "$file_path"
+    fi
+}
+
 # Bootstrap a local env file for first container start.
 if [ ! -f .env ]; then
     cp .env.example .env
@@ -53,7 +80,31 @@ if ! grep -q '^APP_KEY=base64:' .env && ! grep -q '^APP_KEY=.+$' .env; then
     php artisan key:generate --force
 fi
 
+# Generate a dedicated testing app key when .env.testing has none.
+if [ -f .env.testing ]; then
+    testing_app_key="$(read_env_value "APP_KEY" ".env.testing")"
+
+    if [ -z "$testing_app_key" ]; then
+        php artisan key:generate --env=testing --force
+    fi
+fi
+
+# Generate Passport keys once for API token auth when they are missing.
+if [ ! -f storage/oauth-private.key ] || [ ! -f storage/oauth-public.key ]; then
+    php artisan passport:keys --force
+fi
+
 # Clear cached config so container env values are picked up reliably.
 php artisan config:clear
+
+# Keep the dedicated testing database schema in sync for integration tests.
+if [ -f .env.testing ]; then
+    (
+        set -a
+        . ./.env.testing
+        set +a
+        php artisan migrate --force
+    )
+fi
 
 exec "$@"

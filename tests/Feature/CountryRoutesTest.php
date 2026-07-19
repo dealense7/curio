@@ -7,16 +7,17 @@ use App\Models\General\Country\Country;
 use App\Models\General\Country\CountryPhoneCode;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 
 uses(RefreshDatabase::class);
 
 it('returns only active countries from the general countries endpoint', function () {
     $activeCountry = Country::factory()->create([
-        'name' => 'Germany',
+        'name'      => 'Germany',
         'is_active' => true,
     ]);
     Country::factory()->create([
-        'name' => 'Archived Country',
+        'name'      => 'Archived Country',
         'is_active' => false,
     ]);
 
@@ -32,31 +33,31 @@ it('returns only active countries from the general countries endpoint', function
 
 it('creates a country from the admin endpoint when the user has permission', function () {
     $permission = Permission::query()->create([
-        'name' => Country::getPermission('create'),
+        'name'         => Country::getPermission('create'),
         'display_name' => 'Create countries',
-        'guard_name' => 'web',
+        'guard_name'   => 'web',
     ]);
     $user = User::factory()->create();
     $user->givePermissionTo($permission);
 
-    $response = $this
-        ->actingAs($user)
-        ->postJson('/api/admin/countries', [
-            'iso2' => 'ge',
-            'iso3' => 'geo',
-            'numeric_code' => '268',
-            'name' => 'Georgia',
-            'official_name' => 'Georgia',
-            'is_active' => true,
-            'sort_order' => 10,
-            'phone_codes' => [
-                [
-                    'phone_code' => '+995',
-                    'is_primary' => true,
-                    'sort_order' => 0,
-                ],
+    Passport::actingAs($user);
+
+    $response = $this->postJson('/api/admin/countries', [
+        'iso2'          => 'ge',
+        'iso3'          => 'geo',
+        'numeric_code'  => '268',
+        'name'          => 'Georgia',
+        'official_name' => 'Georgia',
+        'is_active'     => true,
+        'sort_order'    => 10,
+        'phone_codes'   => [
+            [
+                'phone_code' => '+995',
+                'is_primary' => true,
+                'sort_order' => 0,
             ],
-        ]);
+        ],
+    ]);
 
     $response->assertOk()
         ->assertJsonPath('data.attributes.iso2', 'GE')
@@ -69,25 +70,26 @@ it('creates a country from the admin endpoint when the user has permission', fun
 it('forbids admin country creation without permission', function () {
     $user = User::factory()->create();
 
-    $this->actingAs($user)
-        ->postJson('/api/admin/countries', [
-            'iso2' => 'ge',
-            'iso3' => 'geo',
-            'name' => 'Georgia',
-        ])
+    Passport::actingAs($user);
+
+    $this->postJson('/api/admin/countries', [
+        'iso2' => 'ge',
+        'iso3' => 'geo',
+        'name' => 'Georgia',
+    ])
         ->assertForbidden();
 });
 
 it('keeps existing phone codes when an admin updates a country without sending phone codes', function () {
     $readPermission = Permission::query()->create([
-        'name' => Country::getPermission('read'),
+        'name'         => Country::getPermission('read'),
         'display_name' => 'View countries',
-        'guard_name' => 'web',
+        'guard_name'   => 'web',
     ]);
     $updatePermission = Permission::query()->create([
-        'name' => Country::getPermission('update'),
+        'name'         => Country::getPermission('update'),
         'display_name' => 'Update countries',
-        'guard_name' => 'web',
+        'guard_name'   => 'web',
     ]);
     $user = User::factory()->create();
     $user->givePermissionTo($readPermission, $updatePermission);
@@ -101,16 +103,16 @@ it('keeps existing phone codes when an admin updates a country without sending p
         'phone_code' => '+995',
     ]);
 
-    $response = $this
-        ->actingAs($user)
-        ->putJson('/api/admin/countries/'.$country->getPublicId(), [
-            'iso2' => 'GE',
-            'iso3' => 'GEO',
-            'name' => 'Georgia Updated',
-            'official_name' => 'Georgia Updated',
-            'is_active' => true,
-            'sort_order' => 5,
-        ]);
+    Passport::actingAs($user);
+
+    $response = $this->putJson('/api/admin/countries/'.$country->getPublicId(), [
+        'iso2'          => 'GE',
+        'iso3'          => 'GEO',
+        'name'          => 'Georgia Updated',
+        'official_name' => 'Georgia Updated',
+        'is_active'     => true,
+        'sort_order'    => 5,
+    ]);
 
     $response->assertOk()
         ->assertJsonPath('data.attributes.name', 'Georgia Updated')
