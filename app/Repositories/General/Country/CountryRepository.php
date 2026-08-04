@@ -130,21 +130,21 @@ class CountryRepository extends Repository implements CountryRepositoryContract
 
         /** @var array<string, CountryPhoneCode> $existingByPublicId */
         $existingByPublicId = $country->phoneCodes
-            ->keyBy(fn (CountryPhoneCode $phoneCode): string => $phoneCode->getPublicId())
+            ->keyBy('public_id')
             ->all();
 
         $keptPhoneCodeIds = [];
 
         foreach ($phoneCodes as $phoneCodeData) {
             $phoneCode = null;
-            $publicId = $phoneCodeData['public_id'] ?? null;
+            $publicId  = $phoneCodeData['public_id'] ?? null;
 
             if (is_string($publicId) && isset($existingByPublicId[$publicId])) {
                 $phoneCode = $existingByPublicId[$publicId];
             }
 
             if ($phoneCode === null) {
-                $phoneCode = new CountryPhoneCode();
+                $phoneCode = new CountryPhoneCode;
                 $phoneCode->forceFill([
                     'public_id' => (string) Str::ulid(),
                 ]);

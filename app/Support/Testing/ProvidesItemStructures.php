@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Support\Testing;
 
+use Illuminate\Support\Str;
+use InvalidArgumentException;
+
 trait ProvidesItemStructures
 {
     private array $successStructure = [
@@ -49,6 +52,83 @@ trait ProvidesItemStructures
         ],
     ];
 
+    private array $difficultyStructure = [
+        'type',
+        'id',
+        'attributes' => [
+            'key',
+            'display_name',
+        ],
+    ];
+
+    private array $currencyStructure = [
+        'type',
+        'id',
+        'attributes' => [
+            'key',
+            'display_name',
+        ],
+    ];
+
+    private array $publishingStatusStructure = [
+        'type',
+        'id',
+        'attributes' => [
+            'key',
+            'display_name',
+        ],
+    ];
+
+    private array $monthStructure = [
+        'type',
+        'id',
+        'attributes' => [
+            'key',
+            'display_name',
+            'sort_order',
+        ],
+    ];
+
+    private array $fileStructure = [
+        'type',
+        'id',
+        'attributes' => [
+            'original_name',
+            'name',
+            'folder',
+            'extension',
+            'mime',
+            'size',
+            'disk',
+            'type',
+            'status',
+            'created_at',
+            'updated_at',
+        ],
+    ];
+
+    private array $tourStructure = [
+        'type',
+        'id',
+        'attributes' => [
+            'title',
+            'description',
+            'start_location',
+            'end_location',
+            'distance_km',
+            'duration_comfortable_days',
+            'duration_recommended_days',
+            'daily_distance_comfortable_km',
+            'daily_distance_recommended_km',
+            'elevation_gain_m',
+            'price_comfortable',
+            'price_recommended',
+            'average_daily_spend',
+            'created_at',
+            'updated_at',
+        ],
+    ];
+
     public function getSuccessStructure(): array
     {
         return $this->successStructure;
@@ -72,5 +152,89 @@ trait ProvidesItemStructures
     public function getAclStructure(): array
     {
         return $this->aclStructure;
+    }
+
+    public function getDifficultyStructure(): array
+    {
+        return $this->difficultyStructure;
+    }
+
+    public function getCurrencyStructure(): array
+    {
+        return $this->currencyStructure;
+    }
+
+    public function getPublishingStatusStructure(): array
+    {
+        return $this->publishingStatusStructure;
+    }
+
+    public function getMonthStructure(): array
+    {
+        return $this->monthStructure;
+    }
+
+    public function getFileStructure(): array
+    {
+        return $this->fileStructure;
+    }
+
+    public function getTourStructure(array $relations = []): array
+    {
+        $structure = $this->tourStructure;
+
+        $this->includeNestedRelations($structure, $relations);
+
+        return $structure;
+    }
+
+    public function getTourConfigStructure(): array
+    {
+        return [
+            'difficulties'        => [$this->difficultyStructure],
+            'publishing_statuses' => [$this->publishingStatusStructure],
+            'currencies'          => [$this->currencyStructure],
+            'months'              => [$this->monthStructure],
+        ];
+    }
+
+    protected function includeNestedRelations(array &$item, array $relations): void
+    {
+        foreach ($relations as $relation) {
+            $parts = explode('.', $relation);
+            $this->includeNestedRelation($item, $parts);
+        }
+    }
+
+    protected function includeNestedRelation(array &$item, array $parentRelations): void
+    {
+        $currentRelation = array_shift($parentRelations);
+
+        if ($parentRelations !== []) {
+            $isCollection = Str::startsWith($currentRelation, '[');
+            $relationKey  = trim($currentRelation, '[]');
+            if ($isCollection) {
+                $this->includeNestedRelation($item['relationships'][$relationKey]['data'][0], $parentRelations);
+            } else {
+                $this->includeNestedRelation($item['relationships'][$relationKey]['data'], $parentRelations);
+            }
+
+            return;
+        }
+
+        $isCollection                 = Str::startsWith($currentRelation, '[');
+        $currentRelation              = trim($currentRelation, '[]');
+        [$relationKey, $relationItem] = Str::contains($currentRelation, ':')
+            ? explode(':', $currentRelation, 2)
+            : [$currentRelation, $currentRelation];
+        $property = Str::camel($relationItem).'Structure';
+
+        if (! property_exists($this, $property)) {
+            throw new InvalidArgumentException('Relation structure for '.$relationItem.' does not exist');
+        }
+
+        $item['relationships'][$relationKey]['data'] = $isCollection
+            ? [$this->{$property}]
+            : $this->{$property};
     }
 }

@@ -40,26 +40,26 @@ class Permission extends BasePermission
 
     public function getId(): int
     {
-        return (int)$this->getKey();
+        return (int) $this->getKey();
     }
 
     public function getName(): string
     {
-        return (string)$this->getAttribute('name');
+        return (string) $this->getAttribute('name');
     }
 
     public function getDisplayName(): string
     {
-        return (string)$this->getAttribute('display_name');
+        return (string) $this->getAttribute('display_name');
     }
 
     public function getGuardName(): string
     {
-        return (string)$this->getAttribute('guard_name');
+        return (string) $this->getAttribute('guard_name');
     }
 
     /**
-     * @param array<int, static> $models
+     * @param  array<int, static>  $models
      * @return Collection<int, static>
      */
     public function newCollection(array $models = []): Collection

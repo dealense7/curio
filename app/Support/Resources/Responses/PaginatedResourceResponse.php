@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Support\Resources\Responses;
 
+use function array_merge_recursive;
+use function count;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\PaginatedResourceResponse as BasePaginatedResourceResponse;
 use Illuminate\Support\Arr;
 
-use function array_merge_recursive;
-use function count;
 use function is_array;
 
 use const JSON_UNESCAPED_SLASHES;
@@ -58,13 +59,13 @@ class PaginatedResourceResponse extends BasePaginatedResourceResponse
     {
         return [
             'pagination' => [
-                'total' => $paginated['total'] ?? null,
-                'count' => count($paginated['data']) ?? null,
-                'perPage' => $paginated['per_page'],
+                'total'       => $paginated['total']       ?? null,
+                'count'       => count($paginated['data']),
+                'perPage'     => $paginated['per_page'],
                 'currentPage' => $paginated['current_page'] ?? null,
-                'totalPages' => $paginated['last_page'] ?? null,
-                'links' => [
-                    'next' => $paginated['next_page_url'] ?? null,
+                'totalPages'  => $paginated['last_page']    ?? null,
+                'links'       => [
+                    'next'     => $paginated['next_page_url'] ?? null,
                     'previous' => $paginated['prev_page_url'] ?? null,
                 ],
             ],

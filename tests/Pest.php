@@ -16,7 +16,7 @@ use Tests\TestCase;
 */
 
 pest()->extend(TestCase::class)
-    ->in('Feature', 'Unit');
+    ->in('Feature/*Test.php', 'Unit');
 
 /*
 |--------------------------------------------------------------------------

@@ -14,9 +14,7 @@ class CountryCacheRepository extends CacheRepository implements CountryRepositor
 {
     protected string $cacheKey = Country::class;
 
-    public function __construct(private readonly CountryRepository $repository)
-    {
-    }
+    public function __construct(private readonly CountryRepository $repository) {}
 
     public function getItems(array $filters = [], array $relations = []): Collection
     {
@@ -28,7 +26,8 @@ class CountryCacheRepository extends CacheRepository implements CountryRepositor
 
     public function getActiveItems(array $relations = []): Collection
     {
-        return $this->remember($this->createKey('active_items', [$relations]),
+        return $this->remember(
+            $this->createKey('active_items', [$relations]),
             fn (): Collection => $this->repository->getActiveItems($relations),
         );
     }

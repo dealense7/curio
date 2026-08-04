@@ -6,12 +6,20 @@ namespace App\Support\Testing;
 
 use App\Models\Acl\Permission;
 use App\Models\Acl\Role;
+use App\Models\General\Currency;
+use App\Models\General\Difficulty;
+use App\Models\General\File;
+use App\Models\General\Month;
+use App\Models\General\PublishingStatus;
+use App\Models\Tour\Tour;
 use App\Models\User;
 use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\Client as OauthClient;
+use Laravel\Passport\Passport;
+use Spatie\Permission\PermissionRegistrar;
 
 class ProvidesTestingData
 {
@@ -26,6 +34,17 @@ class ProvidesTestingData
             'grant_types'   => ['internal', 'internal_refresh_token', 'refresh_token'],
             ...$params,
         ]);
+    }
+
+    public static function createRandomUserAndAuthorize(array $params = [], array $options = []): User
+    {
+        /** @var User $user */
+        $user = self::createRandomUsers($params, $options)->firstOrFail();
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        Passport::actingAs($user);
+
+        return $user;
     }
 
     /**
@@ -84,6 +103,36 @@ class ProvidesTestingData
         ]);
     }
 
+    public static function createFileRandomItem(array $params = [], int $count = 1): Collection
+    {
+        return File::factory()->count($count)->create($params);
+    }
+
+    public static function createTourRandomItem(array $params = [], int $count = 1): Collection
+    {
+        return Tour::factory()->count($count)->create($params);
+    }
+
+    public static function createDifficultyRandomItem(array $params = [], int $count = 1): Collection
+    {
+        return Difficulty::factory()->count($count)->create($params);
+    }
+
+    public static function createCurrencyRandomItem(array $params = [], int $count = 1): Collection
+    {
+        return Currency::factory()->count($count)->create($params);
+    }
+
+    public static function createPublishingStatusRandomItem(array $params = [], int $count = 1): Collection
+    {
+        return PublishingStatus::factory()->count($count)->create($params);
+    }
+
+    public static function createMonthRandomItem(array $params = [], int $count = 1): Collection
+    {
+        return Month::factory()->count($count)->create($params);
+    }
+
     public static function getFaker(): Generator
     {
         if (! isset(self::$faker[0])) {
@@ -99,8 +148,11 @@ class ProvidesTestingData
      */
     private static function permissionNameToModel(array $permissions): Collection
     {
-        return Permission::query()
-            ->whereIn('name', $permissions)
-            ->get();
+        return collect($permissions)->map(
+            static fn (string $permission): Permission => Permission::query()->firstOrCreate(
+                ['name' => $permission, 'guard_name' => 'web'],
+                ['display_name' => $permission],
+            ),
+        );
     }
 }

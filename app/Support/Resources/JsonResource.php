@@ -7,17 +7,21 @@ namespace App\Support\Resources;
 use App\Support\Resources\Contracts\TransformableContract;
 use App\Support\Resources\Contracts\UuidAsPrimaryContract;
 use App\Support\Resources\Responses\ResourceResponse;
-use Exception;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource as BaseResource;
-use Illuminate\Support\Arr;
-use ReflectionClass;
 
 use function array_keys;
 use function array_merge;
 use function array_merge_recursive;
+
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource as BaseResource;
+use Illuminate\Support\Arr;
+
 use function is_null;
 use function method_exists;
+
+use ReflectionClass;
+
 use function ucfirst;
 
 abstract class JsonResource extends BaseResource
@@ -46,7 +50,7 @@ abstract class JsonResource extends BaseResource
 
     public function toArray($request): array
     {
-        $data = $this->getResourceData();
+        $data          = $this->getResourceData();
         $relationsData = $this->getRelationsData();
 
         if (! empty($relationsData)) {
@@ -100,34 +104,30 @@ abstract class JsonResource extends BaseResource
     {
         if ($this->resource instanceof TransformableContract) {
             return [
-                'id' => $this->getResourceId(),
-                'type' => $this->getResourceType(),
+                'id'         => $this->getResourceId(),
+                'type'       => $this->getResourceType(),
                 'attributes' => $this->getTransformed(),
             ];
         }
 
         if (is_null($this->resource)) {
             return [
-                'id' => null,
-                'type' => null,
+                'id'         => null,
+                'type'       => null,
                 'attributes' => [],
             ];
         }
 
         return [
-            'id' => $this->getResourceId(),
-            'type' => $this->getResourceType(),
+            'id'         => $this->getResourceId(),
+            'type'       => $this->getResourceType(),
             'attributes' => $this->getTransformed(),
         ];
     }
 
     protected function getRelationsData(): array
     {
-        if (is_null($this->resource)) {
-            return [];
-        }
-
-        $relations = [];
+        $relations      = [];
         $relationsChain = self::undot($this->includedRelations);
 
         foreach ($relationsChain as $currentRelation => $remainingRelationChain) {
@@ -143,7 +143,7 @@ abstract class JsonResource extends BaseResource
                 $remainingRelations = array_keys(Arr::dot($remainingRelationChain));
             }
 
-            /** @var self $resource */
+            /** @var self|null $resource */
             $resource = $this->$methodName();
 
             if (is_null($resource)) {

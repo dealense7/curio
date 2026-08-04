@@ -9,4 +9,6 @@ interface TransformableContract
     public function getKey();
 
     public function getHidden();
+
+    public function getModel(): static;
 }

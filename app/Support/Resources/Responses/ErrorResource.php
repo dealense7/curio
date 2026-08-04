@@ -26,7 +26,7 @@ class ErrorResource extends JsonResource
                     'general' => is_array($this->resource) ? $this->resource : [$this->resource],
                 ],
             ],
-            $this->additional ?? [],
+            $this->additional,
         );
 
         $this->additional([]);

@@ -22,7 +22,9 @@ class CountryFactory extends Factory
         return [
             'iso2'          => fake()->unique()->lexify('??'),
             'iso3'          => fake()->unique()->lexify('???'),
-            'numeric_code'  => fake()->optional()->unique()->numerify('###'),
+            'numeric_code'  => fake()->optional()->passthrough(
+                fake()->unique()->numerify('###')
+            ),
             'name'          => fake()->unique()->country(),
             'official_name' => fake()->optional()->sentence(3),
             'is_active'     => true,

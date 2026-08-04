@@ -31,12 +31,12 @@ class Role extends BaseRole
     protected function casts(): array
     {
         return [
-            'id' => 'integer',
-            'name' => 'string',
+            'id'           => 'integer',
+            'name'         => 'string',
             'display_name' => 'string',
-            'guard_name' => 'string',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
+            'guard_name'   => 'string',
+            'created_at'   => 'datetime',
+            'updated_at'   => 'datetime',
         ];
     }
 

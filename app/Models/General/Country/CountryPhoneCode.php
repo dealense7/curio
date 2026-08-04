@@ -4,15 +4,21 @@ declare(strict_types=1);
 
 namespace App\Models\General\Country;
 
+use App\Models\Concerns\HasPublicId;
 use App\Models\Model;
+use App\Support\Resources\Contracts\UuidAsPrimaryContract;
 use Database\Factories\CountryPhoneCodeFactory;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use InvalidArgumentException;
 
 #[UseFactory(CountryPhoneCodeFactory::class)]
-class CountryPhoneCode extends Model
+class CountryPhoneCode extends Model implements UuidAsPrimaryContract
 {
+    use HasPublicId;
+    use SoftDeletes;
+
     protected $table = 'country_phone_codes';
 
     /**

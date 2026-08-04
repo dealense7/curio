@@ -54,9 +54,9 @@ class StoreCountryRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $payload = [
-            'iso2' => is_string($this->input('iso2')) ? strtoupper(trim($this->string('iso2')->toString())) : $this->input('iso2'),
-            'iso3' => is_string($this->input('iso3')) ? strtoupper(trim($this->string('iso3')->toString())) : $this->input('iso3'),
-            'numeric_code' => $this->normalizeNullableString('numeric_code'),
+            'iso2'          => is_string($this->input('iso2')) ? strtoupper(trim($this->string('iso2')->toString())) : $this->input('iso2'),
+            'iso3'          => is_string($this->input('iso3')) ? strtoupper(trim($this->string('iso3')->toString())) : $this->input('iso3'),
+            'numeric_code'  => $this->normalizeNullableString('numeric_code'),
             'official_name' => $this->normalizeNullableString('official_name'),
         ];
 
@@ -85,15 +85,15 @@ class StoreCountryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'iso2' => ['required', 'string', 'size:2', 'regex:/^[A-Z]{2}$/', Rule::unique('countries', 'iso2')],
-            'iso3' => ['required', 'string', 'size:3', 'regex:/^[A-Z]{3}$/', Rule::unique('countries', 'iso3')],
-            'numeric_code' => ['nullable', 'string', 'size:3', 'regex:/^[0-9]{3}$/', Rule::unique('countries', 'numeric_code')],
-            'name' => ['required', 'string', 'max:120'],
-            'official_name' => ['nullable', 'string', 'max:180'],
-            'is_active' => ['sometimes', 'boolean'],
-            'sort_order' => ['sometimes', 'integer', 'min:0'],
-            'phone_codes' => ['sometimes', 'array'],
-            'phone_codes.*.public_id' => ['sometimes', 'string', 'max:26'],
+            'iso2'                     => ['required', 'string', 'size:2', 'regex:/^[A-Z]{2}$/', Rule::unique('countries', 'iso2')],
+            'iso3'                     => ['required', 'string', 'size:3', 'regex:/^[A-Z]{3}$/', Rule::unique('countries', 'iso3')],
+            'numeric_code'             => ['nullable', 'string', 'size:3', 'regex:/^[0-9]{3}$/', Rule::unique('countries', 'numeric_code')],
+            'name'                     => ['required', 'string', 'max:120'],
+            'official_name'            => ['nullable', 'string', 'max:180'],
+            'is_active'                => ['sometimes', 'boolean'],
+            'sort_order'               => ['sometimes', 'integer', 'min:0'],
+            'phone_codes'              => ['sometimes', 'array'],
+            'phone_codes.*.public_id'  => ['sometimes', 'string', 'max:26'],
             'phone_codes.*.phone_code' => ['required', 'string', 'max:8', 'regex:/^\+[0-9]+$/'],
             'phone_codes.*.is_primary' => ['sometimes', 'boolean'],
             'phone_codes.*.sort_order' => ['sometimes', 'integer', 'min:0'],

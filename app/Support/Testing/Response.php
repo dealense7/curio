@@ -4,17 +4,27 @@ declare(strict_types=1);
 
 namespace App\Support\Testing;
 
-use Illuminate\Http\Response as HttpResponse;
-use Illuminate\Testing\Assert;
+use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 
 use function json_decode;
+
+use PHPUnit\Framework\Assert;
 
 class Response extends TestResponse
 {
     protected static array $successResponseStructure = [];
 
     protected static array $errorResponseStructure = [];
+
+    protected static array $pagerMetaStructure = [
+        'total',
+        'count',
+        'perPage',
+        'currentPage',
+        'totalPages',
+        'links',
+    ];
 
     public static function setSuccessResponseStructure(array $structure): void
     {
@@ -37,6 +47,22 @@ class Response extends TestResponse
     public function assertJsonDataItemStructure(array $data): self
     {
         $this->assertJsonStructure(['data' => $data]);
+
+        return $this;
+    }
+
+    public function assertJsonDataCollectionStructure(array $data, bool $includePagerMeta = true): self
+    {
+        $structure         = self::$successResponseStructure;
+        $structure['data'] = [$data];
+
+        if ($includePagerMeta) {
+            $structure['meta'] = [
+                'pagination' => self::$pagerMetaStructure,
+            ];
+        }
+
+        $this->assertJsonStructure($structure);
 
         return $this;
     }
@@ -79,6 +105,14 @@ class Response extends TestResponse
     public function assertUnauthorized(): self
     {
         parent::assertUnauthorized();
+
+        return $this;
+    }
+
+    /** @param list<string> $permissions */
+    public function assertForbiddenPermissions(array $permissions): self
+    {
+        Assert::assertTrue(Str::contains((string) $this->json('message'), (string) data_get($permissions, 0)));
 
         return $this;
     }

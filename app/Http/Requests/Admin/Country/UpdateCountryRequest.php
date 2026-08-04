@@ -14,7 +14,7 @@ class UpdateCountryRequest extends StoreCountryRequest
     public function rules(): array
     {
         /** @var string $countryPublicId */
-        $countryPublicId = (string)$this->route('countryPublicId');
+        $countryPublicId = (string) $this->route('countryPublicId');
 
         return [
             'iso2'                     => ['required', 'string', 'size:2', 'regex:/^[A-Z]{2}$/', Rule::unique('countries', 'iso2')->ignore($countryPublicId, 'public_id')],

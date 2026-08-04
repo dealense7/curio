@@ -20,7 +20,7 @@ abstract class ApiResponse
         if ($data instanceof LengthAwarePaginator || $data instanceof Collection) {
             $resource = new JsonResourceCollection($data, $resourceType);
         } else {
-            /** @var \Illuminate\Http\Resources\Json\JsonResource $resource */
+            /** @var JsonResource $resource */
             $resource = new $resourceType($data);
         }
 

@@ -11,10 +11,10 @@ uses(RefreshDatabase::class);
 
 it('stores countries with normalized ISO codes and default flags', function () {
     $country = Country::query()->create([
-        'iso2' => 'de',
-        'iso3' => 'deu',
-        'numeric_code' => '276',
-        'name' => 'Germany',
+        'iso2'          => 'de',
+        'iso3'          => 'deu',
+        'numeric_code'  => '276',
+        'name'          => 'Germany',
         'official_name' => 'Federal Republic of Germany',
     ]);
 
@@ -86,7 +86,7 @@ it('rejects invalid phone code formats', function () {
 });
 
 it('deletes phone codes when the parent country is deleted', function () {
-    $country = Country::factory()->create();
+    $country   = Country::factory()->create();
     $phoneCode = CountryPhoneCode::factory()->for($country, 'country')->primary()->create();
 
     $country->delete();

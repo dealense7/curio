@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace App\Support\Resources;
 
 use App\Support\Resources\Responses\PaginatedResourceResponse;
+
+use function array_merge_recursive;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection as BaseResourceCollection;
 
-use function array_merge_recursive;
 use function is_null;
 
 class JsonResourceCollection extends BaseResourceCollection
 {
     public function toArray($request): array
     {
-        /** @var \App\Support\Resources\JsonResource $item */
+        /** @var JsonResource $item */
         foreach ($this->collection as $item) {
             $item->setDataWrapper('');
         }
@@ -25,7 +27,7 @@ class JsonResourceCollection extends BaseResourceCollection
 
     public function withRelations(array $relations = []): self
     {
-        /** @var \App\Support\Resources\JsonResource $item */
+        /** @var JsonResource $item */
         foreach ($this->collection as $item) {
             $item->withRelations($relations);
         }

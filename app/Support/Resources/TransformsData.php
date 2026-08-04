@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace App\Support\Resources;
 
 use App\Support\Resources\Contracts\TransformableContract;
-use Illuminate\Support\Str;
-use LogicException;
 
 use function call_user_func_array;
-use function in_array;
+
+use Illuminate\Support\Str;
+
 use function is_array;
 use function key;
+
+use LogicException;
+
 use function method_exists;
 
 trait TransformsData
@@ -37,10 +40,10 @@ trait TransformsData
 
     public static function transformToApi(TransformableContract $model): array
     {
-        $fields = static::getParsedTransformFields();
+        $fields           = static::getParsedTransformFields();
         $hiddenProperties = array_fill_keys($model->getHidden(), true);
-        $hideInOutput = array_fill_keys(static::getHideInOutput(), true);
-        $transformed = [];
+        $hideInOutput     = array_fill_keys(static::getHideInOutput(), true);
+        $transformed      = [];
 
         foreach ($fields as $internalField => [$key, $method, $methodOnResource]) {
             if (isset($hiddenProperties[$internalField])) {
@@ -66,7 +69,7 @@ trait TransformsData
     /**
      * @return array<string, array{0: string, 1: string, 2: bool}>
      */
-    private static function getParsedTransformFields(): array
+    protected static function getParsedTransformFields(): array
     {
         if (isset(self::$parsedTransformMappingCache[static::class])) {
             return self::$parsedTransformMappingCache[static::class];
@@ -76,7 +79,7 @@ trait TransformsData
 
         foreach (static::getTransformFields() as $internalField => $transformValue) {
             if (is_array($transformValue)) {
-                $key = (string) key($transformValue);
+                $key    = (string) key($transformValue);
                 $method = (string) $transformValue[$key];
 
                 $parsedFields[$internalField] = [$key, $method, method_exists(static::class, $method)];
@@ -84,7 +87,7 @@ trait TransformsData
                 continue;
             }
 
-            $key = (string) $transformValue;
+            $key                          = (string) $transformValue;
             $parsedFields[$internalField] = [
                 $key,
                 'get'.ucwords(Str::camel($key)),
@@ -121,7 +124,7 @@ trait TransformsData
     private static function parseKeyValue(string $internalField, mixed $transformValue, TransformableContract $model): array
     {
         if (is_array($transformValue)) {
-            $key = key($transformValue);
+            $key    = key($transformValue);
             $method = $transformValue[$key];
 
             if (method_exists(static::class, $method)) {
@@ -135,7 +138,7 @@ trait TransformsData
             $method = 'get'.ucwords(Str::camel($transformValue));
 
             if (method_exists($model, $method)) {
-                $key = $transformValue;
+                $key   = $transformValue;
                 $value = $model->$method();
             } else {
                 $method = 'get'.ucwords(Str::camel($internalField));
@@ -144,7 +147,7 @@ trait TransformsData
                     throw new LogicException('Field '.$internalField.' getter ('.$method.') does not available for model '.$model::class);
                 }
 
-                $key = $transformValue;
+                $key   = $transformValue;
                 $value = $model->$method();
             }
         }

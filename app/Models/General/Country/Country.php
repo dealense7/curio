@@ -4,18 +4,32 @@ declare(strict_types=1);
 
 namespace App\Models\General\Country;
 
+use App\Models\Concerns\HasPublicId;
 use App\Models\Model;
+use App\Support\Resources\Contracts\UuidAsPrimaryContract;
 use Database\Factories\CountryFactory;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[UseFactory(CountryFactory::class)]
-class Country extends Model
+class Country extends Model implements UuidAsPrimaryContract
 {
+    use HasPublicId;
+    use SoftDeletes;
+
     public const string PERMISSIONS_SCOPE = 'countries';
 
     protected $table = 'countries';
+
+    /**
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'is_active'  => true,
+        'sort_order' => 0,
+    ];
 
     /**
      * @var list<string>
@@ -46,6 +60,10 @@ class Country extends Model
         static::saving(static function (self $country): void {
             $country->iso2 = strtoupper($country->iso2);
             $country->iso3 = strtoupper($country->iso3);
+        });
+
+        static::deleting(static function (self $country): void {
+            $country->phoneCodes()->delete();
         });
     }
 

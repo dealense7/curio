@@ -28,7 +28,7 @@ it('returns only active countries from the general countries endpoint', function
         ->assertJsonPath('data.0.id', $activeCountry->getPublicId())
         ->assertJsonPath('data.0.attributes.name', 'Germany')
         ->assertJsonMissingPath('data.0.attributes.is_active')
-        ->assertJsonPath('data.0.relationships.phone_codes.data', []);
+        ->assertJsonPath('data.0.relationships.phoneCodes.data', []);
 });
 
 it('creates a country from the admin endpoint when the user has permission', function () {
@@ -62,7 +62,7 @@ it('creates a country from the admin endpoint when the user has permission', fun
     $response->assertOk()
         ->assertJsonPath('data.attributes.iso2', 'GE')
         ->assertJsonPath('data.attributes.is_active', true)
-        ->assertJsonPath('data.relationships.phone_codes.data.0.attributes.phone_code', '+995');
+        ->assertJsonPath('data.relationships.phoneCodes.data.0.attributes.phone_code', '+995');
 
     expect(Country::query()->where('iso2', 'GE')->exists())->toBeTrue();
 });
@@ -116,8 +116,8 @@ it('keeps existing phone codes when an admin updates a country without sending p
 
     $response->assertOk()
         ->assertJsonPath('data.attributes.name', 'Georgia Updated')
-        ->assertJsonPath('data.relationships.phone_codes.data.0.id', $phoneCode->getPublicId())
-        ->assertJsonPath('data.relationships.phone_codes.data.0.attributes.phone_code', '+995');
+        ->assertJsonPath('data.relationships.phoneCodes.data.0.id', $phoneCode->getPublicId())
+        ->assertJsonPath('data.relationships.phoneCodes.data.0.attributes.phone_code', '+995');
 
     expect(
         CountryPhoneCode::query()

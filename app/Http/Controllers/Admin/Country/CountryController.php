@@ -13,9 +13,7 @@ use Illuminate\Http\JsonResponse;
 
 class CountryController extends ApiController
 {
-    public function __construct(private readonly CountryServiceContract $countryService)
-    {
-    }
+    public function __construct(private readonly CountryServiceContract $countryService) {}
 
     public function index(): JsonResponse
     {

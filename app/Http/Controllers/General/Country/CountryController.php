@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Cache;
 
 class CountryController extends ApiController
 {
-    public function __construct(private readonly CountryServiceContract $countryService)
-    {
-    }
+    public function __construct(private readonly CountryServiceContract $countryService) {}
 
     public function index(): JsonResponse
     {

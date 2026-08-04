@@ -16,4 +16,24 @@ trait HasPublicId
             }
         });
     }
+
+    public function getRouteKeyName(): string
+    {
+        return 'public_id';
+    }
+
+    public function getPublicId(): string
+    {
+        return (string) $this->getAttribute('public_id');
+    }
+
+    public function getUuid(): string
+    {
+        return $this->getPublicId();
+    }
+
+    public function getUuidString(): string
+    {
+        return $this->getPublicId();
+    }
 }

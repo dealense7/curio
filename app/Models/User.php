@@ -82,6 +82,11 @@ class User extends Authenticatable implements TransformableContract, UserContrac
         return 'public_id';
     }
 
+    protected function getDefaultGuardName(): string
+    {
+        return 'web';
+    }
+
     public function getId(): int
     {
         return (int) $this->getKey();

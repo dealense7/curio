@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\CacheRepositories\General\Country\CountryCacheRepository;
+use App\CacheRepositories\Tour\TourCacheRepository;
 use App\Contracts\Repositories\General\Country\CountryRepositoryContract;
+use App\Contracts\Repositories\Tour\TourRepositoryContract;
 use App\Contracts\Services\General\Country\CountryServiceContract;
+use App\Contracts\Services\Tour\TourServiceContract;
 use App\Repositories\General\Country\CountryRepository;
+use App\Repositories\Tour\TourRepository;
 use App\Services\General\Country\CountryService;
+use App\Services\Tour\TourService;
 use Illuminate\Support\ServiceProvider;
 
 class BindingServiceProvider extends ServiceProvider
@@ -20,12 +25,23 @@ class BindingServiceProvider extends ServiceProvider
                 CountryCacheRepository::class,
             ],
         ],
+        TourRepositoryContract::class => [
+            'v1' => [
+                TourRepository::class,
+                TourCacheRepository::class,
+            ],
+        ],
     ];
 
     private const array SERVICES = [
         CountryServiceContract::class => [
             'v1' => [
                 CountryService::class,
+            ],
+        ],
+        TourServiceContract::class => [
+            'v1' => [
+                TourService::class,
             ],
         ],
     ];
@@ -49,7 +65,7 @@ class BindingServiceProvider extends ServiceProvider
 
         foreach ($bindings as $abstract => $versions) {
             $concretes = $versions[$version] ?? $versions['v1'];
-            $concrete = $cacheServices ? data_get($concretes, 1, $concretes[0]) : $concretes[0];
+            $concrete  = $cacheServices ? data_get($concretes, 1, $concretes[0]) : $concretes[0];
 
             $this->app->bind($abstract, $concrete);
         }

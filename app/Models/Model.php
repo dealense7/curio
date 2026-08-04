@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Concerns\HasPublicId;
 use App\Support\Collection;
 use App\Support\Resources\Contracts\TransformableContract;
-use App\Support\Resources\Contracts\UuidAsPrimaryContract;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
-abstract class Model extends EloquentModel implements TransformableContract, UuidAsPrimaryContract
+abstract class Model extends EloquentModel implements TransformableContract
 {
-    use HasPublicId;
-    use SoftDeletes;
+    use HasFactory;
+
+    public const string PERMISSIONS_SCOPE = 'models';
 
     /**
      * Internal keys and audit columns must never be mass assignable by default.
@@ -34,29 +33,9 @@ abstract class Model extends EloquentModel implements TransformableContract, Uui
         'archived_at',
     ];
 
-    public function getRouteKeyName(): string
-    {
-        return 'public_id';
-    }
-
     public function getId(): int
     {
         return (int) $this->getKey();
-    }
-
-    public function getPublicId(): string
-    {
-        return (string) $this->getAttribute('public_id');
-    }
-
-    public function getUuid(): string
-    {
-        return $this->getPublicId();
-    }
-
-    public function getUuidString(): string
-    {
-        return $this->getPublicId();
     }
 
     public function getModel(): static

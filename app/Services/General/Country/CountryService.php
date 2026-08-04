@@ -24,7 +24,7 @@ class CountryService extends Service implements CountryServiceContract
     public function getItems(array $filters = [], array $relations = [], bool $checkPermission = true): Collection
     {
         if ($checkPermission) {
-            $this->authorize('read', new Country());
+            $this->authorize('read', new Country);
         }
 
         return $this->cachedRepository->getItems($filters, $relations);
@@ -33,7 +33,7 @@ class CountryService extends Service implements CountryServiceContract
     public function getActiveItems(array $relations = [], bool $checkPermission = true): Collection
     {
         if ($checkPermission) {
-            $this->authorize('read', new Country());
+            $this->authorize('read', new Country);
         }
 
         return $this->cachedRepository->getActiveItems($relations);
@@ -54,7 +54,7 @@ class CountryService extends Service implements CountryServiceContract
 
     public function create(array $countryData, array $phoneCodes = []): Country
     {
-        $this->authorize('create', new Country());
+        $this->authorize('create', new Country);
 
         /** @var Country $country */
         $country = DB::transaction(function () use ($countryData, $phoneCodes): Country {

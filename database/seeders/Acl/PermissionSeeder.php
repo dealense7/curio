@@ -6,6 +6,7 @@ namespace Database\Seeders\Acl;
 
 use App\Models\Acl\Permission;
 use App\Models\General\Country\Country;
+use App\Models\Tour\Tour;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Spatie\Permission\PermissionRegistrar;
@@ -25,23 +26,32 @@ class PermissionSeeder extends Seeder
                 'delete' => 'Delete countries',
             ],
         ],
+        Tour::PERMISSIONS_SCOPE => [
+            'display_name' => 'Tour management',
+            'permissions'  => [
+                'read'   => 'View tours',
+                'create' => 'Create tours',
+                'update' => 'Update tours',
+                'delete' => 'Delete tours',
+            ],
+        ],
     ];
 
     public function run(): void
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        $now = Carbon::now('UTC');
+        $now  = Carbon::now('UTC');
         $rows = [];
 
         foreach ($this->groupedPermissions as $scope => $values) {
             foreach ($values['permissions'] as $permissionKey => $displayName) {
                 $rows[] = [
-                    'name' => $scope.'.'.$permissionKey,
-                    'guard_name' => 'web',
+                    'name'         => $scope.'.'.$permissionKey,
+                    'guard_name'   => 'web',
                     'display_name' => $displayName,
-                    'created_at' => $now,
-                    'updated_at' => $now,
+                    'created_at'   => $now,
+                    'updated_at'   => $now,
                 ];
             }
         }
