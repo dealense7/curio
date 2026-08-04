@@ -70,9 +70,38 @@ if [ ! -d vendor ]; then
     composer install --no-interaction --prefer-dist
 fi
 
-# Install Node dependencies for Vite-driven frontend assets when needed.
-if [ -f package.json ] && [ ! -d node_modules ]; then
-    npm install --ignore-scripts
+# Keep mounted Node dependencies aligned with the current package manifests.
+if [ -f package.json ]; then
+    node_install_marker="node_modules/.package-lock.json"
+
+    # A Vite dev-server marker can survive a stopped container and override
+    # otherwise valid production assets with an unreachable hot-server URL.
+    if [ -f public/hot ]; then
+        rm -f public/hot
+    fi
+
+    if [ ! -d node_modules ] \
+        || [ ! -f "$node_install_marker" ] \
+        || [ package.json -nt "$node_install_marker" ] \
+        || { [ -f package-lock.json ] && [ package-lock.json -nt "$node_install_marker" ]; }; then
+        npm install --ignore-scripts --no-audit --no-fund
+    fi
+
+    # Build Vite assets on first start and whenever frontend sources change.
+    vite_manifest="public/build/manifest.json"
+    frontend_needs_build=false
+
+    if [ ! -f "$vite_manifest" ] \
+        || [ package.json -nt "$vite_manifest" ] \
+        || { [ -f package-lock.json ] && [ package-lock.json -nt "$vite_manifest" ]; } \
+        || { [ -f vite.config.js ] && [ vite.config.js -nt "$vite_manifest" ]; } \
+        || find resources -type f -newer "$vite_manifest" -print -quit | grep -q .; then
+        frontend_needs_build=true
+    fi
+
+    if [ "$frontend_needs_build" = true ]; then
+        npm run build
+    fi
 fi
 
 # Generate the app key once, but never rotate an existing key on startup.

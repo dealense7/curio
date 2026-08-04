@@ -2,8 +2,12 @@
 
 declare(strict_types=1);
 
-it('returns a successful response', function () {
+it('serves the Vue application shell', function () {
+    $this->withoutVite();
+
     $response = $this->get('/');
 
-    $response->assertStatus(200);
+    $response->assertOk()
+        ->assertSee('<title>Vue is ready</title>', false)
+        ->assertSee('<div id="app"></div>', false);
 });
