@@ -65,8 +65,12 @@ trait ProvidesItemStructures
         'type',
         'id',
         'attributes' => [
-            'key',
-            'display_name',
+            'code',
+            'name',
+            'symbol',
+            'decimal_places',
+            'is_active',
+            'sort_order',
         ],
     ];
 

@@ -24,7 +24,7 @@ class TourSeeder extends Seeder
 {
     public function run(): void
     {
-        $currencyId         = Currency::query()->where('key', CurrencyEnum::EUR->value)->valueOrFail('id');
+        $currencyId         = Currency::query()->where('code', CurrencyEnum::EUR->value)->valueOrFail('id');
         $publishingStatusId = PublishingStatus::query()
             ->where('key', PublishingStatusEnum::PUBLISHED->value)
             ->valueOrFail('id');

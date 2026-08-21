@@ -17,6 +17,13 @@ class CurrencyFactory extends Factory
     {
         $currency = fake()->randomElement(CurrencyEnum::cases());
 
-        return ['key' => $currency, 'display_name' => $currency->getText()];
+        return [
+            'code'           => $currency,
+            'name'           => $currency->getText(),
+            'symbol'         => $currency->getSymbol(),
+            'decimal_places' => 2,
+            'is_active'      => true,
+            'sort_order'     => 0,
+        ];
     }
 }

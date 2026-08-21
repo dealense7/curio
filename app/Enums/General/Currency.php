@@ -20,4 +20,12 @@ enum Currency: string
             self::EUR => 'Euro',
         };
     }
+
+    public function getSymbol(): string
+    {
+        return match ($this) {
+            self::USD => '$',
+            self::EUR => '€',
+        };
+    }
 }

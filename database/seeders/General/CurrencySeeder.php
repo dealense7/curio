@@ -14,8 +14,14 @@ class CurrencySeeder extends Seeder
     {
         foreach (Currency::cases() as $currency) {
             CurrencyModel::query()->updateOrCreate(
-                ['key' => $currency->value],
-                ['display_name' => $currency->getText()],
+                ['code' => $currency->value],
+                [
+                    'name'           => $currency->getText(),
+                    'symbol'         => $currency->getSymbol(),
+                    'decimal_places' => 2,
+                    'is_active'      => true,
+                    'sort_order'     => 0,
+                ],
             );
         }
     }

@@ -21,7 +21,11 @@ it('should return generated lookup ids and enum keys', function (): void {
     }
 
     foreach (Currency::cases() as $currency) {
-        ProvidesTestingData::createCurrencyRandomItem(['key' => $currency, 'display_name' => $currency->getText()]);
+        ProvidesTestingData::createCurrencyRandomItem([
+            'code'   => $currency,
+            'name'   => $currency->getText(),
+            'symbol' => $currency->getSymbol(),
+        ]);
     }
 
     foreach (Month::cases() as $index => $month) {

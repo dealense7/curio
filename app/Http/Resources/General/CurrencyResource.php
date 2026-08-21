@@ -10,8 +10,12 @@ use App\Support\Resources\JsonResource;
 class CurrencyResource extends JsonResource
 {
     protected static array $transformMapping = [
-        'key'          => ['key' => 'getKeyValue'],
-        'display_name' => 'display_name',
+        'code'           => ['code' => 'getCodeValue'],
+        'name'           => 'name',
+        'symbol'         => 'symbol',
+        'decimal_places' => 'decimal_places',
+        'is_active'      => 'is_active',
+        'sort_order'     => 'sort_order',
     ];
 
     public function __construct(?Currency $resource)

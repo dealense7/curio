@@ -135,7 +135,7 @@ it('should create a tour with lookup and file relations', function (): void {
     /** @var Difficulty $difficulty */
     $difficulty           = ProvidesTestingData::createDifficultyRandomItem(['key' => DifficultyEnum::CHALLENGING])->first();
     /** @var Currency $currency */
-    $currency             = ProvidesTestingData::createCurrencyRandomItem(['key' => CurrencyEnum::USD])->first();
+    $currency             = ProvidesTestingData::createCurrencyRandomItem(['code' => CurrencyEnum::USD])->first();
     /** @var PublishingStatus $publishingStatus */
     $publishingStatus     = ProvidesTestingData::createPublishingStatusRandomItem(['key' => PublishingStatusEnum::PUBLISHED])->first();
     /** @var Month $june */
