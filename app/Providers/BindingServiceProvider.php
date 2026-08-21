@@ -8,18 +8,22 @@ use App\CacheRepositories\General\Country\CountryCacheRepository;
 use App\CacheRepositories\General\Currency\CurrencyCacheRepository;
 use App\CacheRepositories\Tour\TourCacheRepository;
 use App\Contracts\Repositories\Company\CompanyRepositoryContract;
+use App\Contracts\Repositories\Company\CompanySettingRepositoryContract;
 use App\Contracts\Repositories\General\Country\CountryRepositoryContract;
 use App\Contracts\Repositories\General\Currency\CurrencyRepositoryContract;
 use App\Contracts\Repositories\Tour\TourRepositoryContract;
 use App\Contracts\Services\Company\CompanyServiceContract;
+use App\Contracts\Services\Company\CompanySettingServiceContract;
 use App\Contracts\Services\General\Country\CountryServiceContract;
 use App\Contracts\Services\General\Currency\CurrencyServiceContract;
 use App\Contracts\Services\Tour\TourServiceContract;
 use App\Repositories\Company\CompanyRepository;
+use App\Repositories\Company\CompanySettingRepository;
 use App\Repositories\General\Country\CountryRepository;
 use App\Repositories\General\Currency\CurrencyRepository;
 use App\Repositories\Tour\TourRepository;
 use App\Services\Company\CompanyService;
+use App\Services\Company\CompanySettingService;
 use App\Services\General\Country\CountryService;
 use App\Services\General\Currency\CurrencyService;
 use App\Services\Tour\TourService;
@@ -31,6 +35,11 @@ class BindingServiceProvider extends ServiceProvider
         CompanyRepositoryContract::class => [
             'v1' => [
                 CompanyRepository::class,
+            ],
+        ],
+        CompanySettingRepositoryContract::class => [
+            'v1' => [
+                CompanySettingRepository::class,
             ],
         ],
         CurrencyRepositoryContract::class => [
@@ -57,6 +66,11 @@ class BindingServiceProvider extends ServiceProvider
         CompanyServiceContract::class => [
             'v1' => [
                 CompanyService::class,
+            ],
+        ],
+        CompanySettingServiceContract::class => [
+            'v1' => [
+                CompanySettingService::class,
             ],
         ],
         CurrencyServiceContract::class => [

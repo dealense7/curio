@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\Country\CountryController;
 use App\Http\Controllers\Admin\Tour\TourController;
+use App\Http\Controllers\Company\CompanySettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')
@@ -21,6 +22,8 @@ Route::middleware('auth:api')
         });
 
         Route::prefix('companies')->group(function (): void {
+            Route::get('{companyPublicId}/settings', [CompanySettingController::class, 'show'])->whereUlid('companyPublicId')->name('companies.settings.show');
+            Route::patch('{companyPublicId}/settings', [CompanySettingController::class, 'update'])->whereUlid('companyPublicId')->name('companies.settings.update');
             Route::get('config', [CompanyController::class, 'config'])->name('companies.config');
             Route::get('/', [CompanyController::class, 'index'])->name('companies.index');
             Route::post('/', [CompanyController::class, 'store'])->name('companies.store');

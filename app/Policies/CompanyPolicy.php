@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\Acl\DefaultRoles;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -26,6 +27,23 @@ class CompanyPolicy extends Policy
         }
 
         return $this->denyWithMessage(Company::getPermission('create'));
+    }
+
+    public function manageSettings(User $user, Company $company): Response
+    {
+        if ($user->hasRole(DefaultRoles::ADMINISTRATOR->value)) {
+            return $this->allow();
+        }
+
+        if ((int) $user->getAttribute('company_id') !== $company->getId()) {
+            return $this->denyWithCustomMessage('You cannot access settings for another company.');
+        }
+
+        if ($user->can(Company::getPermission('read'))) {
+            return $this->allow();
+        }
+
+        return $this->denyWithMessage(Company::getPermission('read'));
     }
 
     public function suspend(User $user, Company $company): Response

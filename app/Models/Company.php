@@ -12,6 +12,7 @@ use Database\Factories\CompanyFactory;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use LogicException;
@@ -61,6 +62,10 @@ class Company extends Model
             $company->slug = self::uniqueSlug($company->slug ?: $company->display_name);
         });
 
+        static::created(static function (self $company): void {
+            $company->settings()->create();
+        });
+
         static::deleting(static function (self $company): void {
             if ($company->users()->exists()) {
                 throw new LogicException('A company with operational users cannot be hard deleted.');
@@ -101,6 +106,11 @@ class Company extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    public function settings(): HasOne
+    {
+        return $this->hasOne(CompanySetting::class);
     }
 
     public function getDisplayName(): string
