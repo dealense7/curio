@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\UserStatus;
 use App\Support\Database\BlueprintMacros;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -18,10 +19,15 @@ return new class extends Migration
             /** @var Blueprint&BlueprintMacros $table */
             $table->id();
             $table->publicId();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('first_name', 80);
+            $table->string('last_name', 80);
+            $table->string('email', 254)->unique();
+            $table->timestampTz('email_verified_at')->nullable();
             $table->string('password');
+            $table->enumString('status', UserStatus::toArray(), UserStatus::ACTIVE->value);
+            $table->string('preferred_locale', 12)->default('en');
+            $table->timestampTz('last_login_at')->nullable();
+            $table->string('last_login_ip', 45)->nullable();
             $table->rememberToken();
             $table->timestampsTz();
             $table->archivable();

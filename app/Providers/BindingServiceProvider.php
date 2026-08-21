@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\CacheRepositories\General\Country\CountryCacheRepository;
 use App\CacheRepositories\General\Currency\CurrencyCacheRepository;
 use App\CacheRepositories\Tour\TourCacheRepository;
+use App\Contracts\Repositories\Auth\AuthLoginAttemptRepositoryContract;
 use App\Contracts\Repositories\Company\CompanyRepositoryContract;
 use App\Contracts\Repositories\Company\CompanySettingRepositoryContract;
 use App\Contracts\Repositories\General\Country\CountryRepositoryContract;
@@ -17,6 +18,7 @@ use App\Contracts\Services\Company\CompanySettingServiceContract;
 use App\Contracts\Services\General\Country\CountryServiceContract;
 use App\Contracts\Services\General\Currency\CurrencyServiceContract;
 use App\Contracts\Services\Tour\TourServiceContract;
+use App\Repositories\Auth\AuthLoginAttemptRepository;
 use App\Repositories\Company\CompanyRepository;
 use App\Repositories\Company\CompanySettingRepository;
 use App\Repositories\General\Country\CountryRepository;
@@ -32,6 +34,11 @@ use Illuminate\Support\ServiceProvider;
 class BindingServiceProvider extends ServiceProvider
 {
     private const array REPOSITORIES = [
+        AuthLoginAttemptRepositoryContract::class => [
+            'v1' => [
+                AuthLoginAttemptRepository::class,
+            ],
+        ],
         CompanyRepositoryContract::class => [
             'v1' => [
                 CompanyRepository::class,

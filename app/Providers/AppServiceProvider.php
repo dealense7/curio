@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Models\General\Country\Country;
+use App\Listeners\RecordSuccessfulLogin;
 use App\Models\Company;
-use App\Policies\CompanyPolicy;
+use App\Models\General\Country\Country;
 use App\Models\Tour\Tour;
+use App\Models\User;
+use App\Observers\UserObserver;
+use App\Policies\CompanyPolicy;
 use App\Policies\General\Country\CountryPolicy;
 use App\Policies\Tour\TourPolicy;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
@@ -32,6 +37,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        User::observe(UserObserver::class);
+        Event::listen(Login::class, RecordSuccessfulLogin::class);
+
         Gate::policy(Country::class, CountryPolicy::class);
         Gate::policy(Tour::class, TourPolicy::class);
         Gate::policy(Company::class, CompanyPolicy::class);

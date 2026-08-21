@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\UserStatus;
 use App\Models\Concerns\Archivable;
 use App\Models\Concerns\HasPublicId;
 use App\Support\Auth\Passport\Contracts\UserContract;
@@ -15,14 +16,16 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Laravel\Passport\HasApiTokens;
 use Laravel\Passport\Token;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['first_name', 'last_name', 'email', 'status', 'preferred_locale', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements TransformableContract, UserContract, UuidAsPrimaryContract
 {
@@ -56,17 +59,25 @@ class User extends Authenticatable implements TransformableContract, UserContrac
     {
         return [
             'email_verified_at' => 'datetime',
+            'last_login_at'     => 'datetime',
             'password'          => 'hashed',
+            'status'            => UserStatus::class,
         ];
     }
 
-    protected static function booted(): void
+    public function setEmailAttribute(?string $email): void
     {
-        static::updated(static function (self $user): void {
-            if ($user->wasChanged(['password', 'archived_at', 'email_verified_at'])) {
-                $user->revokeAccessTokens();
-            }
-        });
+        $this->attributes['email'] = $email === null ? null : Str::lower(trim($email));
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return trim($this->getFirstName().' '.$this->getLastName());
+    }
+
+    public static function normalizeEmail(string $email): string
+    {
+        return Str::lower(trim($email));
     }
 
     public function revokeAccessTokens(): void
@@ -107,6 +118,7 @@ class User extends Authenticatable implements TransformableContract, UserContrac
     public function isEligibleForAuthentication(): bool
     {
         return $this->getAttribute('archived_at') === null
+            && $this->getAttribute('status')            !== UserStatus::SUSPENDED
             && $this->getAttribute('email_verified_at') !== null;
     }
 
@@ -125,9 +137,19 @@ class User extends Authenticatable implements TransformableContract, UserContrac
         return $this;
     }
 
-    public function getName(): string
+    public function getFirstName(): string
     {
-        return (string) $this->getAttribute('name');
+        return (string) $this->getAttribute('first_name');
+    }
+
+    public function getLastName(): string
+    {
+        return (string) $this->getAttribute('last_name');
+    }
+
+    public function getFullName(): string
+    {
+        return $this->getFullNameAttribute();
     }
 
     public function company(): BelongsTo
@@ -135,9 +157,24 @@ class User extends Authenticatable implements TransformableContract, UserContrac
         return $this->belongsTo(Company::class);
     }
 
+    public function contacts(): HasMany
+    {
+        return $this->hasMany(UserContact::class)->whereNull('archived_at');
+    }
+
     public function getEmail(): string
     {
         return (string) $this->getAttribute('email');
+    }
+
+    public function getStatus(): string
+    {
+        return $this->getAttribute('status')->value;
+    }
+
+    public function getPreferredLocale(): string
+    {
+        return (string) $this->getAttribute('preferred_locale');
     }
 
     public function getCreatedAt(): ?Carbon

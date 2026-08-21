@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -27,10 +28,13 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'              => fake()->name(),
+            'first_name'        => fake()->firstName(),
+            'last_name'         => fake()->lastName(),
             'email'             => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password'          => static::$password ??= Hash::make('password'),
+            'status'            => UserStatus::ACTIVE,
+            'preferred_locale'  => 'en',
             'remember_token'    => Str::random(10),
         ];
     }
@@ -43,5 +47,20 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    public function active(): static
+    {
+        return $this->state(['status' => UserStatus::ACTIVE]);
+    }
+
+    public function invited(): static
+    {
+        return $this->state(['status' => UserStatus::INVITED]);
+    }
+
+    public function suspended(): static
+    {
+        return $this->state(['status' => UserStatus::SUSPENDED]);
     }
 }

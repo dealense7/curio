@@ -17,4 +17,6 @@ interface UserRepositoryContract extends UserRepositoryInterface
     public function retrieveUserByToken(int $identifier, string $token): ?UserContract;
 
     public function updateRememberToken(UserContract $user, string $token): void;
+
+    public function recordLogin(UserContract $user, ?string $ip): void;
 }

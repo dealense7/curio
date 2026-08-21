@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Support\Auth\Passport\Repositories;
 
+use App\Enums\UserStatus;
 use App\Models\User;
 use App\Support\Auth\Passport\Contracts\UserContract;
 use App\Support\Auth\Passport\Contracts\UserRepositoryContract;
 use Exception;
+use Illuminate\Support\Carbon;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use RuntimeException;
@@ -34,7 +36,7 @@ class UserRepository implements UserRepositoryContract
             return null;
         }
 
-        $login = (string) ($credentials['login'] ?? $credentials['email'] ?? '');
+        $login = User::normalizeEmail((string) ($credentials['login'] ?? $credentials['email'] ?? ''));
         if ($login === '') {
             return null;
         }
@@ -44,6 +46,7 @@ class UserRepository implements UserRepositoryContract
             ->newQuery()
             ->where('email', '=', $login)
             ->whereNull('archived_at')
+            ->where('status', '!=', UserStatus::SUSPENDED)
             ->whereNotNull('email_verified_at')
             ->first();
 
@@ -57,6 +60,7 @@ class UserRepository implements UserRepositoryContract
             ->newQuery()
             ->where('id', $id)
             ->whereNull('archived_at')
+            ->where('status', '!=', UserStatus::SUSPENDED)
             ->whereNotNull('email_verified_at')
             ->with($relationships)
             ->first();
@@ -72,6 +76,17 @@ class UserRepository implements UserRepositoryContract
     public function updateRememberToken(UserContract $user, string $token): void
     {
         // Not used for API token auth.
+    }
+
+    public function recordLogin(UserContract $user, ?string $ip): void
+    {
+        $this->getModel()
+            ->newQuery()
+            ->whereKey($user->getAuthIdentifier())
+            ->update([
+                'last_login_at' => Carbon::now('UTC'),
+                'last_login_ip' => $ip,
+            ]);
     }
 
     protected function getModel(): User

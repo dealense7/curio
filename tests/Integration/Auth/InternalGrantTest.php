@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\UserStatus;
 use App\Support\Testing\ProvidesTestingData;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
@@ -123,7 +124,7 @@ it('should return user by internal grant', function (): void {
     ]);
 
     $response->assertOk();
-    $response->assertJsonDataItemStructure($this->getUserStructure());
+    $response->assertJsonDataItemStructure($this->getUserStructure(['[contacts]']));
 
     $response = $this->json('DELETE', $this->url('auth/token'), [], [
         'Authorization' => 'Bearer '.$accessToken,
@@ -148,6 +149,58 @@ it('should return user by internal grant', function (): void {
     ]);
 
     $response->assertUnauthorized();
+});
+
+it('should update login metadata after successful authentication', function (): void {
+    $oauthClient = ProvidesTestingData::createRandomOauthClient();
+    $user        = ProvidesTestingData::createRandomUsers([
+        'email' => 'login-metadata@example.com',
+    ])->first();
+
+    $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.10'])
+        ->json('POST', $this->url('auth/token'), [
+            'client_id'  => (string) $oauthClient->getKey(),
+            'grant_type' => 'internal',
+            'login'      => ' LOGIN-METADATA@EXAMPLE.COM ',
+            'password'   => '12345678',
+        ])->assertCreated();
+
+    $user->refresh();
+
+    expect($user->getAttribute('last_login_at'))->not->toBeNull()
+        ->and($user->getAttribute('last_login_ip'))->toBe('203.0.113.10');
+
+    $this->assertDatabaseHas('auth_login_attempts', [
+        'user_id'    => $user->getKey(),
+        'login'      => 'login-metadata@example.com',
+        'succeeded'  => true,
+        'ip_address' => '203.0.113.10',
+    ]);
+});
+
+it('should reject suspended users without revealing account existence', function (): void {
+    $oauthClient = ProvidesTestingData::createRandomOauthClient();
+    $user        = ProvidesTestingData::createRandomUsers([
+        'email'  => 'suspended@example.com',
+        'status' => UserStatus::SUSPENDED,
+    ])->first();
+
+    $suspendedResponse = $this->json('POST', $this->url('auth/token'), [
+        'client_id'  => (string) $oauthClient->getKey(),
+        'grant_type' => 'internal',
+        'login'      => $user->getEmail(),
+        'password'   => '12345678',
+    ]);
+    $unknownResponse = $this->json('POST', $this->url('auth/token'), [
+        'client_id'  => (string) $oauthClient->getKey(),
+        'grant_type' => 'internal',
+        'login'      => 'missing@example.com',
+        'password'   => '12345678',
+    ]);
+
+    expect($suspendedResponse->status())->toBe($unknownResponse->status())
+        ->and($suspendedResponse->getDecodedContent()['message'])
+        ->toBe($unknownResponse->getDecodedContent()['message']);
 });
 
 it('should validate token request fields before invoking passport', function (array $payload, string $field): void {

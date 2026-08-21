@@ -32,12 +32,28 @@ trait ProvidesItemStructures
         ],
     ];
 
+    private array $userContactStructure = [
+        'type',
+        'id',
+        'attributes' => [
+            'public_id',
+            'type',
+            'label',
+            'value',
+            'is_primary',
+        ],
+    ];
+
     private array $userStructure = [
         'type',
         'id',
         'attributes' => [
-            'name',
+            'first_name',
+            'last_name',
+            'full_name',
             'email',
+            'status',
+            'preferred_locale',
             'created_at',
             'updated_at',
         ],
@@ -172,9 +188,13 @@ trait ProvidesItemStructures
         return $this->accessTokenStructure;
     }
 
-    public function getUserStructure(): array
+    public function getUserStructure(array $relations = []): array
     {
-        return $this->userStructure;
+        $structure = $this->userStructure;
+
+        $this->includeNestedRelations($structure, $relations);
+
+        return $structure;
     }
 
     public function getAclStructure(): array

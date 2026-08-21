@@ -74,12 +74,12 @@ class AuthController extends ApiController
 
     public function currentUser(AuthServiceContract $authService): JsonResponse
     {
-        $user = $authService->getUser();
+        $user = $authService->getUser(['contacts']);
         if ($user === null) {
             return $this->resourceNotFound();
         }
 
-        return $this->resource($user, CurrentUserResource::class);
+        return $this->resource($user, CurrentUserResource::class, ['contacts']);
     }
 
     public function permissions(AuthServiceContract $authService): JsonResponse
