@@ -21,11 +21,11 @@ class RoleSeeder extends Seeder
 
         Role::query()->upsert(
             [[
-                'name' => DefaultRoles::ADMINISTRATOR->value,
-                'guard_name' => 'web',
+                'name'         => DefaultRoles::ADMINISTRATOR->value,
+                'guard_name'   => 'web',
                 'display_name' => 'Administrator',
-                'created_at' => $now,
-                'updated_at' => $now,
+                'created_at'   => $now,
+                'updated_at'   => $now,
             ]],
             ['name', 'guard_name'],
             ['display_name', 'updated_at'],

@@ -64,5 +64,49 @@ class ModelConventionServiceProvider extends ServiceProvider
 
             return $this;
         });
+
+        Blueprint::macro('enumString', function (string $column, array $values, ?string $default = null): Blueprint {
+            /** @var Blueprint $this */
+            $definition = $this->string($column, 64);
+
+            if ($default !== null) {
+                $definition->default($default);
+            }
+
+            return $this;
+        });
+
+        Blueprint::macro('money', function (string $name): Blueprint {
+            /** @var Blueprint $this */
+            $this->unsignedBigInteger($name.'_amount_minor');
+            $this->char($name.'_currency_code', 3);
+
+            return $this;
+        });
+
+        Blueprint::macro('coordinates', function (string $latitude = 'latitude', string $longitude = 'longitude'): Blueprint {
+            /** @var Blueprint $this */
+            $this->decimal($latitude, 10, 7);
+            $this->decimal($longitude, 10, 7);
+
+            return $this;
+        });
+
+        Blueprint::macro('weight', function (string $column = 'weight'): Blueprint {
+            /** @var Blueprint $this */
+            $this->decimal($column, 12, 3);
+
+            return $this;
+        });
+
+        Blueprint::macro('dimensions', function (string $prefix = ''): Blueprint {
+            /** @var Blueprint $this */
+            $prefix = $prefix === '' ? '' : $prefix.'_';
+            $this->decimal($prefix.'length', 10, 2);
+            $this->decimal($prefix.'width', 10, 2);
+            $this->decimal($prefix.'height', 10, 2);
+
+            return $this;
+        });
     }
 }

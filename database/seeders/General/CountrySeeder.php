@@ -18,7 +18,7 @@ class CountrySeeder extends Seeder
     {
         $path = database_path('data/countries.json');
 
-        if (!is_file($path)) {
+        if (! is_file($path)) {
             throw new \RuntimeException("Country dataset not found at [{$path}].");
         }
 
@@ -38,19 +38,19 @@ class CountrySeeder extends Seeder
             $countryPhoneCodesByIso2 = [];
 
             foreach ($countries as $index => $item) {
-                $iso2       = strtoupper((string)$item['cca2']);
-                $iso3       = strtoupper((string)$item['cca3']);
+                $iso2       = strtoupper((string) $item['cca2']);
+                $iso3       = strtoupper((string) $item['cca3']);
                 $phoneCodes = collect($item['callingCodes'] ?? [])
-                    ->filter(fn(mixed $code): bool => is_string($code) && preg_match('/^\+\d{1,11}$/', $code) === 1)
+                    ->filter(fn (mixed $code): bool => is_string($code) && preg_match('/^\+\d{1,11}$/', $code) === 1)
                     ->unique()
                     ->values();
 
                 $countryRows[] = [
-                    'public_id'     => (string)Str::ulid(),
+                    'public_id'     => (string) Str::ulid(),
                     'iso2'          => $iso2,
                     'iso3'          => $iso3,
-                    'numeric_code'  => isset($item['ccn3']) ? (string)$item['ccn3'] : null,
-                    'name'          => (string)data_get($item, 'name.common'),
+                    'numeric_code'  => isset($item['ccn3']) ? (string) $item['ccn3'] : null,
+                    'name'          => (string) data_get($item, 'name.common'),
                     'official_name' => data_get($item, 'name.official'),
                     'is_active'     => true,
                     'sort_order'    => $index,
@@ -71,7 +71,7 @@ class CountrySeeder extends Seeder
             $persistedCountries = Country::query()
                 ->whereIn('iso2', array_keys($countryPhoneCodesByIso2))
                 ->get()
-                ->keyBy(fn(Country $country): string => $country->getIso2());
+                ->keyBy(fn (Country $country): string => $country->getIso2());
 
             $phoneCodeRows = [];
             $countryIds    = [];
@@ -88,7 +88,7 @@ class CountrySeeder extends Seeder
 
                 foreach ($phoneCodes as $phoneIndex => $phoneCode) {
                     $phoneCodeRows[] = [
-                        'public_id'  => (string)Str::ulid(),
+                        'public_id'  => (string) Str::ulid(),
                         'country_id' => $country->getId(),
                         'phone_code' => $phoneCode,
                         'is_primary' => $phoneIndex === 0,

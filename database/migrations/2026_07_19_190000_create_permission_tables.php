@@ -16,10 +16,10 @@ return new class extends Migration
         /** @var array<string, string> $tableNames */
         $tableNames = config('permission.table_names');
         /** @var array<string, string|null> $columnNames */
-        $columnNames = config('permission.column_names');
-        $pivotRole = $columnNames['role_pivot_key'] ?? 'role_id';
+        $columnNames     = config('permission.column_names');
+        $pivotRole       = $columnNames['role_pivot_key']       ?? 'role_id';
         $pivotPermission = $columnNames['permission_pivot_key'] ?? 'permission_id';
-        $modelMorphKey = $columnNames['model_morph_key'] ?? 'model_id';
+        $modelMorphKey   = $columnNames['model_morph_key']      ?? 'model_id';
 
         Schema::create($tableNames['permissions'], static function (Blueprint $table) {
             $table->id();
