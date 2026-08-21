@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\Country\CountryController;
 use App\Http\Controllers\Admin\Tour\TourController;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,16 @@ Route::middleware('auth:api')
             Route::get('{countryPublicId}', [CountryController::class, 'show'])->whereUlid('countryPublicId')->name('countries.show');
             Route::put('{countryPublicId}', [CountryController::class, 'update'])->whereUlid('countryPublicId')->name('countries.update');
             Route::delete('{countryPublicId}', [CountryController::class, 'destroy'])->whereUlid('countryPublicId')->name('countries.destroy');
+        });
+
+        Route::prefix('companies')->group(function (): void {
+            Route::get('config', [CompanyController::class, 'config'])->name('companies.config');
+            Route::get('/', [CompanyController::class, 'index'])->name('companies.index');
+            Route::post('/', [CompanyController::class, 'store'])->name('companies.store');
+            Route::get('{companyPublicId}', [CompanyController::class, 'show'])->whereUlid('companyPublicId')->name('companies.show');
+            Route::post('{companyPublicId}/suspend', [CompanyController::class, 'suspend'])->whereUlid('companyPublicId')->name('companies.suspend');
+            Route::post('{companyPublicId}/reactivate', [CompanyController::class, 'reactivate'])->whereUlid('companyPublicId')->name('companies.reactivate');
+            Route::post('{companyPublicId}/archive', [CompanyController::class, 'archive'])->whereUlid('companyPublicId')->name('companies.archive');
         });
 
         Route::prefix('tours')->group(function (): void {

@@ -39,7 +39,7 @@ class CountryService extends Service implements CountryServiceContract
         return $this->cachedRepository->getActiveItems($relations);
     }
 
-    public function findByPublicId(string $publicId, array $relations = []): ?Country
+    public function findByPublicId(string $publicId, array $relations = [], bool $checkPermission = true): ?Country
     {
         $country = $this->cachedRepository->findByPublicId($publicId, $relations);
 
@@ -47,7 +47,9 @@ class CountryService extends Service implements CountryServiceContract
             return null;
         }
 
-        $this->authorize('read', $country);
+        if ($checkPermission) {
+            $this->authorize('read', $country);
+        }
 
         return $country;
     }

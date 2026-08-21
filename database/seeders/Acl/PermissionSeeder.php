@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders\Acl;
 
 use App\Models\Acl\Permission;
+use App\Models\Company;
 use App\Models\General\Country\Country;
 use App\Models\Tour\Tour;
 use Illuminate\Database\Seeder;
@@ -17,6 +18,16 @@ class PermissionSeeder extends Seeder
      * @var array<string, array{display_name: string, permissions: array<string, string>}>
      */
     protected array $groupedPermissions = [
+        Company::PERMISSIONS_SCOPE => [
+            'display_name' => 'Company management',
+            'permissions'  => [
+                'read'       => 'View companies',
+                'create'     => 'Create companies',
+                'suspend'    => 'Suspend companies',
+                'reactivate' => 'Reactivate companies',
+                'archive'    => 'Archive companies',
+            ],
+        ],
         Country::PERMISSIONS_SCOPE => [
             'display_name' => 'Country management',
             'permissions'  => [

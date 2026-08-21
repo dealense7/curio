@@ -13,7 +13,7 @@ interface CountryServiceContract
 
     public function getActiveItems(array $relations = [], bool $checkPermission = true): Collection;
 
-    public function findByPublicId(string $publicId, array $relations = []): ?Country;
+    public function findByPublicId(string $publicId, array $relations = [], bool $checkPermission = true): ?Country;
 
     /**
      * @param  array<string, mixed>  $countryData

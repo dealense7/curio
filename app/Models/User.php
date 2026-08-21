@@ -14,6 +14,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -40,6 +41,7 @@ class User extends Authenticatable implements TransformableContract, UserContrac
      */
     protected $guarded = [
         'id',
+        'company_id',
         'public_id',
         'created_at',
         'updated_at',
@@ -126,6 +128,11 @@ class User extends Authenticatable implements TransformableContract, UserContrac
     public function getName(): string
     {
         return (string) $this->getAttribute('name');
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
     }
 
     public function getEmail(): string

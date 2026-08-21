@@ -22,6 +22,9 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->unsignedInteger('sort_order')->default(0);
             $table->timestampsTz();
+
+            $table->check('code = upper(code)');
+            $table->check('decimal_places between 0 and 4');
         });
     }
 

@@ -5,20 +5,40 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\CacheRepositories\General\Country\CountryCacheRepository;
+use App\CacheRepositories\General\Currency\CurrencyCacheRepository;
 use App\CacheRepositories\Tour\TourCacheRepository;
+use App\Contracts\Repositories\Company\CompanyRepositoryContract;
 use App\Contracts\Repositories\General\Country\CountryRepositoryContract;
+use App\Contracts\Repositories\General\Currency\CurrencyRepositoryContract;
 use App\Contracts\Repositories\Tour\TourRepositoryContract;
+use App\Contracts\Services\Company\CompanyServiceContract;
 use App\Contracts\Services\General\Country\CountryServiceContract;
+use App\Contracts\Services\General\Currency\CurrencyServiceContract;
 use App\Contracts\Services\Tour\TourServiceContract;
+use App\Repositories\Company\CompanyRepository;
 use App\Repositories\General\Country\CountryRepository;
+use App\Repositories\General\Currency\CurrencyRepository;
 use App\Repositories\Tour\TourRepository;
+use App\Services\Company\CompanyService;
 use App\Services\General\Country\CountryService;
+use App\Services\General\Currency\CurrencyService;
 use App\Services\Tour\TourService;
 use Illuminate\Support\ServiceProvider;
 
 class BindingServiceProvider extends ServiceProvider
 {
     private const array REPOSITORIES = [
+        CompanyRepositoryContract::class => [
+            'v1' => [
+                CompanyRepository::class,
+            ],
+        ],
+        CurrencyRepositoryContract::class => [
+            'v1' => [
+                CurrencyRepository::class,
+                CurrencyCacheRepository::class,
+            ],
+        ],
         CountryRepositoryContract::class => [
             'v1' => [
                 CountryRepository::class,
@@ -34,6 +54,16 @@ class BindingServiceProvider extends ServiceProvider
     ];
 
     private const array SERVICES = [
+        CompanyServiceContract::class => [
+            'v1' => [
+                CompanyService::class,
+            ],
+        ],
+        CurrencyServiceContract::class => [
+            'v1' => [
+                CurrencyService::class,
+            ],
+        ],
         CountryServiceContract::class => [
             'v1' => [
                 CountryService::class,

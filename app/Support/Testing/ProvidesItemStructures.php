@@ -133,6 +133,30 @@ trait ProvidesItemStructures
         ],
     ];
 
+    private array $companyStructure = [
+        'type',
+        'id',
+        'attributes' => [
+            'display_name',
+            'legal_name',
+            'slug',
+            'status',
+            'country_id',
+            'default_currency_id',
+            'timezone',
+            'default_locale',
+            'support_email',
+            'support_phone',
+            'website_url',
+            'logo_path',
+            'suspended_at',
+            'suspension_reason',
+            'created_at',
+            'updated_at',
+            'archived_at',
+        ],
+    ];
+
     public function getSuccessStructure(): array
     {
         return $this->successStructure;
@@ -190,6 +214,11 @@ trait ProvidesItemStructures
         $this->includeNestedRelations($structure, $relations);
 
         return $structure;
+    }
+
+    public function getCompanyStructure(): array
+    {
+        return $this->companyStructure;
     }
 
     public function getTourConfigStructure(): array

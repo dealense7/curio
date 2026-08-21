@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Models\General\Country\Country;
+use App\Models\Company;
+use App\Policies\CompanyPolicy;
 use App\Models\Tour\Tour;
 use App\Policies\General\Country\CountryPolicy;
 use App\Policies\Tour\TourPolicy;
@@ -32,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(Country::class, CountryPolicy::class);
         Gate::policy(Tour::class, TourPolicy::class);
+        Gate::policy(Company::class, CompanyPolicy::class);
 
         RateLimiter::for('auth-token', function (Request $request): array {
             $ip        = (string) $request->ip();

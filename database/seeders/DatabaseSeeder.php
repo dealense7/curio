@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             DifficultySeeder::class,
             PublishingStatusSeeder::class,
             CurrencySeeder::class,
+            CompanySeeder::class,
             MonthSeeder::class,
             TourSeeder::class,
         ]);

@@ -6,6 +6,8 @@ namespace App\Support\Testing;
 
 use App\Models\Acl\Permission;
 use App\Models\Acl\Role;
+use App\Models\Company;
+use App\Models\General\Country\Country;
 use App\Models\General\Currency;
 use App\Models\General\Difficulty;
 use App\Models\General\File;
@@ -111,6 +113,16 @@ class ProvidesTestingData
     public static function createTourRandomItem(array $params = [], int $count = 1): Collection
     {
         return Tour::factory()->count($count)->create($params);
+    }
+
+    public static function createCompanyRandomItem(array $params = [], int $count = 1): Collection
+    {
+        return Company::factory()->count($count)->create($params);
+    }
+
+    public static function createCountryRandomItem(array $params = [], int $count = 1): Collection
+    {
+        return Country::factory()->count($count)->create($params);
     }
 
     public static function createDifficultyRandomItem(array $params = [], int $count = 1): Collection
