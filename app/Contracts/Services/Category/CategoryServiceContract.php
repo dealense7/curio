@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Contracts\Repositories\Retailer;
+namespace App\Contracts\Services\Category;
 
-use App\Models\Retailer\Retailer;
+use App\Models\Category\Category;
 use App\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-interface RetailerRepositoryContract
+interface CategoryServiceContract
 {
     public function getItems(array $filters = [], array $relations = [], ?string $sort = null): Collection;
 
@@ -20,13 +20,13 @@ interface RetailerRepositoryContract
         ?string $sort = null,
     ): LengthAwarePaginator;
 
-    public function findByPublicId(string $publicId, array $relations = []): ?Retailer;
+    public function findByPublicId(string $publicId, array $relations = [], bool $checkPermission = true): ?Category;
 
     public function slugExists(string $slug, ?string $exceptPublicId = null): bool;
 
-    public function create(array $data): Retailer;
+    public function create(array $data): Category;
 
-    public function fillData(Retailer $retailer, array $data): Retailer;
+    public function update(Category $category, array $data): Category;
 
-    public function delete(Retailer $retailer): void;
+    public function delete(Category $category): void;
 }

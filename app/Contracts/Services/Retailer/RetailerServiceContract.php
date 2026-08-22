@@ -10,7 +10,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 interface RetailerServiceContract
 {
-    public function getItems(array $filters = [], array $relations = []): Collection;
+    public function getItems(array $filters = [], array $relations = [], ?string $sort = null): Collection;
 
     public function getItemsWithPagination(
         array $filters = [],

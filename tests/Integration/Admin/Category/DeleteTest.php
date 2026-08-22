@@ -3,24 +3,21 @@
 declare(strict_types=1);
 
 use App\Support\Testing\ProvidesTestingData;
-use Tests\Integration\Admin\Retailer\ModelTestCase;
+use Tests\Integration\Admin\Category\ModelTestCase;
 
 uses(ModelTestCase::class);
 
 it('should raise unauthorized', function (): void {
-    $response = $this->jsonWithHeader('DELETE', $this->url('admin/retailers/01J00000000000000000000000'));
+    $response = $this->jsonWithHeader('DELETE', $this->url('admin/categories/01J00000000000000000000000'));
 
     $response->assertUnauthorized();
 });
 
 it('should raise forbidden', function (): void {
     ProvidesTestingData::createRandomUserAndAuthorize();
-    $retailer = ProvidesTestingData::createRetailerRandomItem()->firstOrFail();
+    $category = ProvidesTestingData::createCategoryRandomItem()->firstOrFail();
 
-    $response = $this->jsonWithHeader(
-        'DELETE',
-        $this->url('admin/retailers/'.$retailer->getPublicId()),
-    );
+    $response = $this->jsonWithHeader('DELETE', $this->url('admin/categories/'.$category->getPublicId()));
 
     $response->assertForbiddenPermissions($this->getPermissions(['read']));
     $response->assertForbidden();
@@ -31,22 +28,19 @@ it('should raise not found', function (): void {
         'permissions' => $this->getPermissions(['delete']),
     ]);
 
-    $response = $this->jsonWithHeader('DELETE', $this->url('admin/retailers/01J00000000000000000000000'));
+    $response = $this->jsonWithHeader('DELETE', $this->url('admin/categories/01J00000000000000000000000'));
 
     $response->assertNotFound();
 });
 
-it('should delete retailer', function (): void {
+it('should delete a category', function (): void {
     ProvidesTestingData::createRandomUserAndAuthorize([], [
         'permissions' => $this->getPermissions(['read', 'delete']),
     ]);
-    $retailer = ProvidesTestingData::createRetailerRandomItem()->firstOrFail();
+    $category = ProvidesTestingData::createCategoryRandomItem()->firstOrFail();
 
-    $response = $this->jsonWithHeader(
-        'DELETE',
-        $this->url('admin/retailers/'.$retailer->getPublicId()),
-    );
+    $response = $this->jsonWithHeader('DELETE', $this->url('admin/categories/'.$category->getPublicId()));
 
     $response->assertOk();
-    $this->assertSoftDeleted('retailers', ['id' => $retailer->getId()]);
+    $this->assertSoftDeleted('categories', ['id' => $category->getId()]);
 });

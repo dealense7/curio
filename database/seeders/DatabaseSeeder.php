@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use Database\Seeders\Acl\PermissionSeeder;
 use Database\Seeders\Acl\RoleSeeder;
+use Database\Seeders\Category\CategorySeeder;
 use Database\Seeders\General\CountrySeeder;
 use Database\Seeders\General\CurrencySeeder;
 use Database\Seeders\Retailer\RetailerSeeder;
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
             CountrySeeder::class,
             CurrencySeeder::class,
             RetailerSeeder::class,
+            CategorySeeder::class,
         ]);
     }
 }

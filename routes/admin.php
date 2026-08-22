@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Admin\Category\CategoryController;
 use App\Http\Controllers\Admin\Country\CountryController;
 use App\Http\Controllers\Admin\Retailer\RetailerController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,14 @@ Route::middleware('auth:api')
             Route::get('{retailerPublicId}', [RetailerController::class, 'show'])->whereUlid('retailerPublicId')->name('retailers.show');
             Route::put('{retailerPublicId}', [RetailerController::class, 'update'])->whereUlid('retailerPublicId')->name('retailers.update');
             Route::delete('{retailerPublicId}', [RetailerController::class, 'destroy'])->whereUlid('retailerPublicId')->name('retailers.destroy');
+        });
+
+        Route::prefix('categories')->group(function (): void {
+            Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
+            Route::post('/', [CategoryController::class, 'store'])->name('categories.store');
+            Route::get('{categoryPublicId}', [CategoryController::class, 'show'])->whereUlid('categoryPublicId')->name('categories.show');
+            Route::put('{categoryPublicId}', [CategoryController::class, 'update'])->whereUlid('categoryPublicId')->name('categories.update');
+            Route::delete('{categoryPublicId}', [CategoryController::class, 'destroy'])->whereUlid('categoryPublicId')->name('categories.destroy');
         });
 
     });

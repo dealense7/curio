@@ -58,6 +58,7 @@ repository or cache repository
 - API create and update requests must accept public ULIDs for related resources, even when the database column is named with an internal suffix such as country_id or currency_id.
 - Resolve related public ULIDs through their service contracts and cached repository path before converting them to internal database IDs.
 - If a related public ULID does not resolve, use the controller custom validation-error flow for the specific request field. Do not use direct database exists rules for these cached references.
+- Index filters for related resources should query through the relationship using the supplied public ULID. An unknown public ULID naturally produces an empty successful result; do not pre-resolve or validate it in the controller. Strict not-found validation applies to create and update references.
 - Request validation rules must not perform direct database lookups for business uniqueness checks. Resolve those checks through the controller's service contract and its repository/cache-repository path, then use the custom validation-error flow. Keep the database unique constraint as the final concurrency safeguard.
 
 ## Index Operations
@@ -66,8 +67,8 @@ repository or cache repository
 - Controllers should extract those values with the shared API controller helpers and pass them to the service.
 - Services authorize the operation; repositories pass filters into the repository pipeline, apply safe sort columns, and paginate the result.
 - Each repository filter should have one responsibility, receive the filter array through the pipeline payload, and be listed by the repository's `getFilters()` method. Do not repeat filter conditions inline in repository query methods.
-- Sortable models use the shared `Sortable` trait. The model declares its additional sortable fields in `$sortFields`; `id` is always included by default and is the fallback sort (`id` descending).
-- Repositories must use the model's `parseSort()` result for ordering instead of maintaining a separate hard-coded sortable-field list.
+- Sortable models use the shared `Sortable` trait. The model declares its additional sortable fields in `$sortFields`; `id` is always included by default. Models may define their own `$sortBy` default, such as `name ASC`; the trait falls back to `id DESC` only when no model default is provided.
+- Repositories must use the model's `parseSort()` result for ordering instead of maintaining a separate hard-coded sortable-field list. `getItems()` accepts an optional sort and uses the model's configured default when it is omitted.
 - Add ItemsTest coverage for unauthorized, forbidden, filtered/sorted results, and PaginateListTest coverage when pagination applies.
 
 ## Shared Test Structures
@@ -84,10 +85,13 @@ repository or cache repository
 - Add factory state methods only when the state represents reusable domain behavior beyond a simple attribute override.
 - Keep request data readable by assigning filters, sorting, pagination, or payload values to a named `$data` variable before calling the request helper.
 - Keep response assertions as separate statements. Avoid long assertion chains so each expected response property is easy to scan and maintain.
+- Resource relationship methods should follow the established resource pattern: use `new RelatedResource($this->whenLoaded('relation'))` for singular relations and `new JsonResourceCollection($this->whenLoaded('relation'), RelatedResource::class)` for collections. Do not conditionally inspect or manually unwrap loaded relations in the resource.
 
 ## Domain-oriented organization
 
 Organize application code by both layer and business domain. When a class belongs to a domain, place it under that domain rather than in a flat global namespace. This applies to services, service contracts, repository contracts, repositories, cache repositories, policies, events, middleware, jobs, listeners, requests, and resources.
+
+CRUD business models use Laravel soft deletes when deletion must remain recoverable: add `$table->softDeletes()` in the migration and `SoftDeletes` to the model. Membership lifecycle records use their explicit `archived_at` lifecycle field instead of soft deletes.
 
 New business models should include a domain seeder under `database/seeders/{Domain}` when development or test environments need representative records. Register the seeder in `DatabaseSeeder`, seed required foreign-key references from existing records, and use idempotent operations such as `updateOrCreate` so repeated seeding is safe.
 
@@ -121,4 +125,4 @@ tests/Integration/{Layer}/{Domain}/
 └── TreeTest.php
 ```
 
-Create only the files that apply to the domain. Keep one operation per file. Within each operation file, use this test order where applicable: unauthorized, validation errors, forbidden permission, not found, then successful operation. Reuse the domain `ModelTestCase`, `IntegrationTestCase`, `DatabaseTransactions`, `ProvidesTestingData`, and shared request/response helpers.
+Create only the files that apply to the domain. Keep one operation per file. Within each operation file, use this test order where applicable: unauthorized, validation errors, forbidden permission, not found, then successful operation. Show, update, delete, items, and paginated-list tests must include unauthorized and forbidden cases; update and delete must also include not-found cases. Reuse the domain `ModelTestCase`, `IntegrationTestCase`, `DatabaseTransactions`, `ProvidesTestingData`, and shared request/response helpers.

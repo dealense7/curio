@@ -17,11 +17,11 @@ class RetailerService extends Service implements RetailerServiceContract
 {
     public function __construct(private readonly RetailerRepositoryContract $repository) {}
 
-    public function getItems(array $filters = [], array $relations = []): Collection
+    public function getItems(array $filters = [], array $relations = [], ?string $sort = null): Collection
     {
         $this->authorize('read', new Retailer);
 
-        return $this->repository->getItems($filters, $relations);
+        return $this->repository->getItems($filters, $relations, $sort);
     }
 
     public function getItemsWithPagination(

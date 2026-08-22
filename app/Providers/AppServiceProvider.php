@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Listeners\RecordSuccessfulLogin;
+use App\Models\Category\Category;
 use App\Models\General\Country\Country;
 use App\Models\Retailer\Retailer;
 use App\Models\User;
 use App\Observers\UserObserver;
+use App\Policies\Category\CategoryPolicy;
 use App\Policies\General\Country\CountryPolicy;
 use App\Policies\RetailerPolicy;
 use Illuminate\Auth\Events\Login;
@@ -39,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(Login::class, RecordSuccessfulLogin::class);
 
         Gate::policy(Country::class, CountryPolicy::class);
+        Gate::policy(Category::class, CategoryPolicy::class);
         Gate::policy(Retailer::class, RetailerPolicy::class);
 
         RateLimiter::for('auth-token', function (Request $request): array {

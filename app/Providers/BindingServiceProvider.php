@@ -4,20 +4,25 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\CacheRepositories\Category\CategoryCacheRepository;
 use App\CacheRepositories\General\Country\CountryCacheRepository;
 use App\CacheRepositories\General\Currency\CurrencyCacheRepository;
 use App\CacheRepositories\Retailer\RetailerCacheRepository;
 use App\Contracts\Repositories\Auth\AuthLoginAttemptRepositoryContract;
+use App\Contracts\Repositories\Category\CategoryRepositoryContract;
 use App\Contracts\Repositories\General\Country\CountryRepositoryContract;
 use App\Contracts\Repositories\General\Currency\CurrencyRepositoryContract;
 use App\Contracts\Repositories\Retailer\RetailerRepositoryContract;
+use App\Contracts\Services\Category\CategoryServiceContract;
 use App\Contracts\Services\General\Country\CountryServiceContract;
 use App\Contracts\Services\General\Currency\CurrencyServiceContract;
 use App\Contracts\Services\Retailer\RetailerServiceContract;
 use App\Repositories\Auth\AuthLoginAttemptRepository;
+use App\Repositories\Category\CategoryRepository;
 use App\Repositories\General\Country\CountryRepository;
 use App\Repositories\General\Currency\CurrencyRepository;
 use App\Repositories\Retailer\RetailerRepository;
+use App\Services\Category\CategoryService;
 use App\Services\General\Country\CountryService;
 use App\Services\General\Currency\CurrencyService;
 use App\Services\Retailer\RetailerService;
@@ -49,6 +54,12 @@ class BindingServiceProvider extends ServiceProvider
                 RetailerCacheRepository::class,
             ],
         ],
+        CategoryRepositoryContract::class => [
+            'v1' => [
+                CategoryRepository::class,
+                CategoryCacheRepository::class,
+            ],
+        ],
     ];
 
     private const array SERVICES = [
@@ -65,6 +76,11 @@ class BindingServiceProvider extends ServiceProvider
         RetailerServiceContract::class => [
             'v1' => [
                 RetailerService::class,
+            ],
+        ],
+        CategoryServiceContract::class => [
+            'v1' => [
+                CategoryService::class,
             ],
         ],
     ];

@@ -2,20 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Retailer;
+namespace App\Repositories\Category;
 
-use App\Contracts\Repositories\Retailer\RetailerRepositoryContract;
-use App\Filters\Admin\Retailer\FilterByDomain;
-use App\Filters\Admin\Retailer\FilterByIsActive;
-use App\Filters\Admin\Retailer\FilterByName;
-use App\Filters\Admin\Retailer\FilterByScrapingEnabled;
-use App\Filters\Admin\Retailer\FilterBySlug;
-use App\Models\Retailer\Retailer;
+use App\Contracts\Repositories\Category\CategoryRepositoryContract;
+use App\Filters\Admin\Category\FilterByName;
+use App\Filters\Admin\Category\FilterByParentId;
+use App\Filters\Admin\Category\FilterBySlug;
+use App\Models\Category\Category;
 use App\Repositories\Repository;
 use App\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class RetailerRepository extends Repository implements RetailerRepositoryContract
+class CategoryRepository extends Repository implements CategoryRepositoryContract
 {
     public function getItems(array $filters = [], array $relations = [], ?string $sort = null): Collection
     {
@@ -25,7 +23,7 @@ class RetailerRepository extends Repository implements RetailerRepositoryContrac
             $query->orderBy($column, $direction);
         }
 
-        /** @var Collection<int, Retailer> $items */
+        /** @var Collection<int, Category> $items */
         $items = $query->get();
 
         return $items;
@@ -47,15 +45,15 @@ class RetailerRepository extends Repository implements RetailerRepositoryContrac
         return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
-    public function findByPublicId(string $publicId, array $relations = []): ?Retailer
+    public function findByPublicId(string $publicId, array $relations = []): ?Category
     {
-        /** @var ?Retailer $retailer */
-        $retailer = $this->getData()
+        /** @var ?Category $category */
+        $category = $this->getData()
             ->with($relations)
             ->where('public_id', $publicId)
             ->first();
 
-        return $retailer;
+        return $category;
     }
 
     public function slugExists(string $slug, ?string $exceptPublicId = null): bool
@@ -69,28 +67,27 @@ class RetailerRepository extends Repository implements RetailerRepositoryContrac
         return $query->exists();
     }
 
-    public function create(array $data): Retailer
+    public function create(array $data): Category
     {
         return $this->fillData($this->getModel(), $data);
     }
 
-    public function fillData(Retailer $retailer, array $data): Retailer
+    public function fillData(Category $category, array $data): Category
     {
-        $retailer->fill($data);
-        $retailer->forceFill(array_intersect_key($data, array_flip(['created_by', 'updated_by'])));
-        $retailer->saveOrFail();
+        $category->fill($data);
+        $category->saveOrFail();
 
-        return $retailer;
+        return $category;
     }
 
-    public function delete(Retailer $retailer): void
+    public function delete(Category $category): void
     {
-        $retailer->delete();
+        $category->delete();
     }
 
-    public function getModel(): Retailer
+    public function getModel(): Category
     {
-        return new Retailer;
+        return new Category;
     }
 
     public function getFilters(): array
@@ -98,9 +95,7 @@ class RetailerRepository extends Repository implements RetailerRepositoryContrac
         return [
             FilterByName::class,
             FilterBySlug::class,
-            FilterByDomain::class,
-            FilterByIsActive::class,
-            FilterByScrapingEnabled::class,
+            FilterByParentId::class,
         ];
     }
 }

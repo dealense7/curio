@@ -25,6 +25,7 @@ return new class extends Migration
             $table->timestampTz('last_scraped_at')->nullable();
             $table->actorColumns();
             $table->timestampsTz();
+            $table->softDeletes();
 
             $table->index(['is_active', 'scraping_enabled']);
         });

@@ -6,6 +6,7 @@ namespace App\Support\Testing;
 
 use App\Models\Acl\Permission;
 use App\Models\Acl\Role;
+use App\Models\Category\Category;
 use App\Models\General\Country\Country;
 use App\Models\General\Currency;
 use App\Models\Retailer\Retailer;
@@ -113,6 +114,11 @@ class ProvidesTestingData
     public static function createRetailerRandomItem(array $params = [], int $count = 1): Collection
     {
         return Retailer::factory()->count($count)->create($params);
+    }
+
+    public static function createCategoryRandomItem(array $params = [], int $count = 1): Collection
+    {
+        return Category::factory()->count($count)->create($params);
     }
 
     public static function getFaker(): Generator

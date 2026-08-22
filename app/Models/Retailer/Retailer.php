@@ -13,12 +13,14 @@ use App\Support\Resources\Contracts\UuidAsPrimaryContract;
 use Database\Factories\Retailer\RetailerFactory;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 #[UseFactory(RetailerFactory::class)]
 class Retailer extends Model implements UuidAsPrimaryContract
 {
     use HasPublicId;
+    use SoftDeletes;
 
     public const string PERMISSIONS_SCOPE = 'retailers';
 
@@ -31,6 +33,9 @@ class Retailer extends Model implements UuidAsPrimaryContract
         'is_active',
         'scraping_enabled',
     ];
+
+    /** @var array<string, string> */
+    protected array $sortBy = ['name' => 'asc'];
 
     protected $table = 'retailers';
 

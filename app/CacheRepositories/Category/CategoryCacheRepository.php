@@ -2,23 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\CacheRepositories\Retailer;
+namespace App\CacheRepositories\Category;
 
 use App\CacheRepositories\CacheRepository;
-use App\Contracts\Repositories\Retailer\RetailerRepositoryContract;
-use App\Models\Retailer\Retailer;
-use App\Repositories\Retailer\RetailerRepository;
+use App\Contracts\Repositories\Category\CategoryRepositoryContract;
+use App\Models\Category\Category;
+use App\Repositories\Category\CategoryRepository;
 use App\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class RetailerCacheRepository extends CacheRepository implements RetailerRepositoryContract
+class CategoryCacheRepository extends CacheRepository implements CategoryRepositoryContract
 {
-    protected string $cacheKey = Retailer::class;
+    protected string $cacheKey = Category::class;
 
-    public function __construct(private readonly RetailerRepository $repository)
-    {
-        //
-    }
+    public function __construct(private readonly CategoryRepository $repository) {}
 
     public function getItems(array $filters = [], array $relations = [], ?string $sort = null): Collection
     {
@@ -41,11 +38,11 @@ class RetailerCacheRepository extends CacheRepository implements RetailerReposit
         );
     }
 
-    public function findByPublicId(string $publicId, array $relations = []): ?Retailer
+    public function findByPublicId(string $publicId, array $relations = []): ?Category
     {
         return $this->rememberNullable(
             $this->createKey('find_by_public_id', [$publicId, $relations]),
-            fn (): ?Retailer => $this->repository->findByPublicId($publicId, $relations),
+            fn (): ?Category => $this->repository->findByPublicId($publicId, $relations),
         );
     }
 
@@ -57,25 +54,25 @@ class RetailerCacheRepository extends CacheRepository implements RetailerReposit
         );
     }
 
-    public function create(array $data): Retailer
+    public function create(array $data): Category
     {
-        $retailer = $this->repository->create($data);
+        $category = $this->repository->create($data);
         $this->clear();
 
-        return $retailer;
+        return $category;
     }
 
-    public function fillData(Retailer $retailer, array $data): Retailer
+    public function fillData(Category $category, array $data): Category
     {
-        $retailer = $this->repository->fillData($retailer, $data);
+        $category = $this->repository->fillData($category, $data);
         $this->clear();
 
-        return $retailer;
+        return $category;
     }
 
-    public function delete(Retailer $retailer): void
+    public function delete(Category $category): void
     {
-        $this->repository->delete($retailer);
+        $this->repository->delete($category);
         $this->clear();
     }
 }

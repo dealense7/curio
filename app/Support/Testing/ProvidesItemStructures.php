@@ -98,6 +98,18 @@ trait ProvidesItemStructures
         ],
     ];
 
+    private array $categoryStructure = [
+        'type',
+        'id',
+        'attributes' => [
+            'parent_id',
+            'name',
+            'slug',
+            'created_at',
+            'updated_at',
+        ],
+    ];
+
     public function getSuccessStructure(): array
     {
         return $this->successStructure;
@@ -135,6 +147,15 @@ trait ProvidesItemStructures
     public function getRetailerStructure(array $relations = []): array
     {
         $structure = $this->retailerStructure;
+
+        $this->includeNestedRelations($structure, $relations);
+
+        return $structure;
+    }
+
+    public function getCategoryStructure(array $relations = []): array
+    {
+        $structure = $this->categoryStructure;
 
         $this->includeNestedRelations($structure, $relations);
 
