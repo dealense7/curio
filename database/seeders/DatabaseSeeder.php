@@ -9,6 +9,7 @@ use Database\Seeders\Acl\RoleSeeder;
 use Database\Seeders\General\Category\CategorySeeder;
 use Database\Seeders\General\CountrySeeder;
 use Database\Seeders\General\CurrencySeeder;
+use Database\Seeders\Product\ProductSeeder;
 use Database\Seeders\Retailer\RetailerSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -29,6 +30,7 @@ class DatabaseSeeder extends Seeder
             CurrencySeeder::class,
             RetailerSeeder::class,
             CategorySeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }

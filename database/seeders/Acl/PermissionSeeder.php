@@ -7,6 +7,7 @@ namespace Database\Seeders\Acl;
 use App\Models\Acl\Permission;
 use App\Models\General\Category\Category;
 use App\Models\General\Country\Country;
+use App\Models\Product\Product;
 use App\Models\Retailer\Retailer;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
@@ -43,6 +44,15 @@ class PermissionSeeder extends Seeder
                 'create' => 'Create categories',
                 'update' => 'Update categories',
                 'delete' => 'Delete categories',
+            ],
+        ],
+        Product::PERMISSIONS_SCOPE => [
+            'display_name' => 'Product management',
+            'permissions'  => [
+                'read'   => 'View products',
+                'create' => 'Create products',
+                'update' => 'Update products',
+                'delete' => 'Delete products',
             ],
         ],
     ];

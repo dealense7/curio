@@ -93,6 +93,8 @@ Organize application code by both layer and business domain. When a class belong
 
 Global/reference domains belong under the `General` grouping, for example `App\Models\General\Category\Category`, `App\Repositories\General\Category`, and `App\Services\General\Category`. Keep admin HTTP classes under their admin layer, such as `App\Http\Controllers\Admin\Category` and `App\Http\Requests\Admin\Category`.
 
+Shared file records belong under `App\Models\General\File` and use the existing file enums and polymorphic attachment foundation. Domain models that support attachments expose a typed `morphMany` relationship to that General File model; file upload and download workflows remain in the General File subsystem.
+
 Shared reusable model traits belong under `App\Support\Traits`. Do not place traits under `App\Models\Concerns`; model namespaces are for models, while support traits are shared infrastructure.
 
 User-domain models belong under `App\Models\User` (`User`, contacts, and future user submodels). Authentication-specific models belong under `App\Models\Auth`. Application model contracts belong under `App\Contracts\Models\{Domain}`; Passport framework contracts remain under `App\Support\Auth\Passport\Contracts` and are extended by the application contract when needed.
@@ -102,6 +104,8 @@ Domain enums follow the same grouping, so User enums belong under `App\Enums\Use
 CRUD business models use Laravel soft deletes when deletion must remain recoverable: add `$table->softDeletes()` in the migration and `SoftDeletes` to the model. Membership lifecycle records use their explicit `archived_at` lifecycle field instead of soft deletes.
 
 New business models should include a domain seeder under `database/seeders/{Domain}` when development or test environments need representative records. Register the seeder in `DatabaseSeeder`, seed required foreign-key references from existing records, and use idempotent operations such as `updateOrCreate` so repeated seeding is safe.
+
+Product matching should prefer an existing non-null GTIN (EAN-8, EAN-13, UPC, or GTIN). GTIN remains optional because retailer data may omit it; do not make it required or assume every numeric identifier has the same length. Product file attachments use the existing polymorphic `File` relation.
 
 For any domain, use corresponding namespaces such as:
 

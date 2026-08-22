@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Repositories\Retailer;
 
 use App\Contracts\Repositories\Retailer\RetailerRepositoryContract;
+use App\Filters\Admin\FilterByIsActive;
 use App\Filters\Admin\Retailer\FilterByDomain;
-use App\Filters\Admin\Retailer\FilterByIsActive;
 use App\Filters\Admin\Retailer\FilterByName;
 use App\Filters\Admin\Retailer\FilterByScrapingEnabled;
 use App\Filters\Admin\Retailer\FilterBySlug;

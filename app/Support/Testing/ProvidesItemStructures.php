@@ -98,6 +98,24 @@ trait ProvidesItemStructures
         ],
     ];
 
+    private array $productStructure = [
+        'type',
+        'id',
+        'attributes' => [
+            'category_id',
+            'name',
+            'brand',
+            'gtin',
+            'size_value',
+            'size_unit',
+            'pack_count',
+            'description',
+            'is_active',
+            'created_at',
+            'updated_at',
+        ],
+    ];
+
     private array $categoryStructure = [
         'type',
         'id',
@@ -156,6 +174,15 @@ trait ProvidesItemStructures
     public function getCategoryStructure(array $relations = []): array
     {
         $structure = $this->categoryStructure;
+
+        $this->includeNestedRelations($structure, $relations);
+
+        return $structure;
+    }
+
+    public function getProductStructure(array $relations = []): array
+    {
+        $structure = $this->productStructure;
 
         $this->includeNestedRelations($structure, $relations);
 

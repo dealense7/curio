@@ -9,6 +9,8 @@ use App\Models\Acl\Role;
 use App\Models\General\Category\Category;
 use App\Models\General\Country\Country;
 use App\Models\General\Currency;
+use App\Models\General\File;
+use App\Models\Product\Product;
 use App\Models\Retailer\Retailer;
 use App\Models\User\User;
 use Faker\Factory;
@@ -119,6 +121,16 @@ class ProvidesTestingData
     public static function createCategoryRandomItem(array $params = [], int $count = 1): Collection
     {
         return Category::factory()->count($count)->create($params);
+    }
+
+    public static function createProductRandomItem(array $params = [], int $count = 1): Collection
+    {
+        return Product::factory()->count($count)->create($params);
+    }
+
+    public static function createFileRandomItem(array $params = [], int $count = 1): Collection
+    {
+        return File::factory()->count($count)->create($params);
     }
 
     public static function getFaker(): Generator

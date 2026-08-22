@@ -7,11 +7,13 @@ namespace App\Providers;
 use App\Listeners\RecordSuccessfulLogin;
 use App\Models\General\Category\Category;
 use App\Models\General\Country\Country;
+use App\Models\Product\Product;
 use App\Models\Retailer\Retailer;
 use App\Models\User\User;
 use App\Observers\UserObserver;
 use App\Policies\General\Category\CategoryPolicy;
 use App\Policies\General\Country\CountryPolicy;
+use App\Policies\ProductPolicy;
 use App\Policies\RetailerPolicy;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -43,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Country::class, CountryPolicy::class);
         Gate::policy(Category::class, CategoryPolicy::class);
         Gate::policy(Retailer::class, RetailerPolicy::class);
+        Gate::policy(Product::class, ProductPolicy::class);
 
         RateLimiter::for('auth-token', function (Request $request): array {
             $ip        = (string) $request->ip();

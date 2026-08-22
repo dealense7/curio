@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models\General\Category;
 
 use App\Models\Model;
+use App\Models\Product\Product;
 use App\Support\Resources\Contracts\UuidAsPrimaryContract;
 use App\Support\Traits\HasPublicId;
 use Database\Factories\General\Category\CategoryFactory;
@@ -50,6 +51,11 @@ class Category extends Model implements UuidAsPrimaryContract
     public function children(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id')->orderBy('name');
+    }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
     }
 
     public function getName(): string
