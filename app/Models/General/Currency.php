@@ -7,8 +7,6 @@ namespace App\Models\General;
 use App\Enums\General\Currency as CurrencyEnum;
 use App\Models\Concerns\HasPublicId;
 use App\Models\Model;
-use App\Models\Tour\Tour;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Currency extends Model
 {
@@ -37,10 +35,5 @@ class Currency extends Model
     public function getName(): string
     {
         return (string) $this->getAttribute('name');
-    }
-
-    public function tours(): HasMany
-    {
-        return $this->hasMany(Tour::class, 'currency_id');
     }
 }

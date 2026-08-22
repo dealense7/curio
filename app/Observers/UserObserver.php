@@ -33,7 +33,6 @@ class UserObserver
         ]);
 
         $contact->forceFill([
-            'company_id'  => $user->getAttribute('company_id'),
             'label'       => null,
             'value'       => $user->getEmail(),
             'is_primary'  => true,

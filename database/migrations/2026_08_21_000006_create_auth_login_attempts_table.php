@@ -16,7 +16,6 @@ return new class extends Migration
             $table->id();
             $table->publicId();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->companyKey(true);
             $table->string('login', 254);
             $table->boolean('succeeded')->default(true);
             $table->string('ip_address', 45)->nullable();

@@ -36,31 +36,24 @@ class UserContact extends Model
 
     protected static function booted(): void
     {
-        static::creating(static function (self $contact): void {
-            if ($contact->company_id === null && $contact->user_id !== null) {
-                $contact->company_id = User::query()
-                    ->whereKey($contact->user_id)
-                    ->value('company_id');
-            }
-        });
-
         static::saving(static function (self $contact): void {
-            $contact->value = match ($contact->type) {
-                UserContactType::EMAIL                           => Str::lower(trim((string) $contact->value)),
-                UserContactType::PHONE, UserContactType::ADDRESS => trim((string) $contact->value),
+            $contact->value = match ($contact->getType()) {
+                UserContactType::EMAIL->value                                  => Str::lower(trim((string) $contact->value)),
+                UserContactType::PHONE->value, UserContactType::ADDRESS->value => trim((string) $contact->value),
+                default                                                        => trim((string) $contact->value),
             };
 
         });
 
         static::saved(static function (self $contact): void {
-            if (! $contact->is_primary || $contact->archived_at !== null) {
+            if (! $contact->is_primary || $contact->getAttribute('archived_at') !== null) {
                 return;
             }
 
             self::query()
                 ->where('user_id', $contact->user_id)
-                ->where('type', $contact->type->value)
-                ->whereKey('!=', $contact->getKey())
+                ->where('type', $contact->getType())
+                ->where($contact->getKeyName(), '!=', $contact->getKey())
                 ->where('is_primary', true)
                 ->update(['is_primary' => false]);
         });

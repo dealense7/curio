@@ -6,14 +6,8 @@ namespace App\Support\Testing;
 
 use App\Models\Acl\Permission;
 use App\Models\Acl\Role;
-use App\Models\Company;
 use App\Models\General\Country\Country;
 use App\Models\General\Currency;
-use App\Models\General\Difficulty;
-use App\Models\General\File;
-use App\Models\General\Month;
-use App\Models\General\PublishingStatus;
-use App\Models\Tour\Tour;
 use App\Models\User;
 use Faker\Factory;
 use Faker\Generator;
@@ -105,44 +99,14 @@ class ProvidesTestingData
         ]);
     }
 
-    public static function createFileRandomItem(array $params = [], int $count = 1): Collection
-    {
-        return File::factory()->count($count)->create($params);
-    }
-
-    public static function createTourRandomItem(array $params = [], int $count = 1): Collection
-    {
-        return Tour::factory()->count($count)->create($params);
-    }
-
-    public static function createCompanyRandomItem(array $params = [], int $count = 1): Collection
-    {
-        return Company::factory()->count($count)->create($params);
-    }
-
     public static function createCountryRandomItem(array $params = [], int $count = 1): Collection
     {
         return Country::factory()->count($count)->create($params);
     }
 
-    public static function createDifficultyRandomItem(array $params = [], int $count = 1): Collection
-    {
-        return Difficulty::factory()->count($count)->create($params);
-    }
-
     public static function createCurrencyRandomItem(array $params = [], int $count = 1): Collection
     {
         return Currency::factory()->count($count)->create($params);
-    }
-
-    public static function createPublishingStatusRandomItem(array $params = [], int $count = 1): Collection
-    {
-        return PublishingStatus::factory()->count($count)->create($params);
-    }
-
-    public static function createMonthRandomItem(array $params = [], int $count = 1): Collection
-    {
-        return Month::factory()->count($count)->create($params);
     }
 
     public static function getFaker(): Generator

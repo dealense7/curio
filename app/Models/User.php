@@ -15,7 +15,6 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -44,7 +43,6 @@ class User extends Authenticatable implements TransformableContract, UserContrac
      */
     protected $guarded = [
         'id',
-        'company_id',
         'public_id',
         'created_at',
         'updated_at',
@@ -150,11 +148,6 @@ class User extends Authenticatable implements TransformableContract, UserContrac
     public function getFullName(): string
     {
         return $this->getFullNameAttribute();
-    }
-
-    public function company(): BelongsTo
-    {
-        return $this->belongsTo(Company::class);
     }
 
     public function contacts(): HasMany

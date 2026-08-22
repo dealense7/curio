@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->publicId();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->companyKey(true);
             $table->enumString('type', UserContactType::toArray());
             $table->string('label', 80)->nullable();
             $table->text('value');

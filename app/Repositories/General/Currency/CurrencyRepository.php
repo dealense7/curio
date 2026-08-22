@@ -25,9 +25,12 @@ class CurrencyRepository extends Repository implements CurrencyRepositoryContrac
 
     public function findByPublicId(string $publicId): ?Currency
     {
-        return $this->getData()
+        /** @var ?Currency $currency */
+        $currency = $this->getData()
             ->where('public_id', $publicId)
             ->first();
+
+        return $currency;
     }
 
     public function getModel(): Currency

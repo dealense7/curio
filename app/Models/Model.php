@@ -24,7 +24,6 @@ abstract class Model extends EloquentModel implements TransformableContract
     protected $guarded = [
         'id',
         'public_id',
-        'company_id',
         'version',
         'created_by',
         'updated_by',

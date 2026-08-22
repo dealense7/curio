@@ -32,17 +32,6 @@ class ModelConventionServiceProvider extends ServiceProvider
             return $this;
         });
 
-        Blueprint::macro('companyKey', function (bool $nullable = false): Blueprint {
-            /** @var Blueprint $this */
-            $column = $nullable
-                ? $this->foreignId('company_id')->nullable()
-                : $this->foreignId('company_id');
-
-            $column->constrained('companies')->restrictOnDelete();
-
-            return $this;
-        });
-
         Blueprint::macro('archivable', function (): Blueprint {
             /** @var Blueprint $this */
             $this->timestampTz('archived_at')->nullable()->index();

@@ -13,7 +13,6 @@ class AuthLoginAttempt extends Model
 
     protected $fillable = [
         'user_id',
-        'company_id',
         'login',
         'succeeded',
         'ip_address',

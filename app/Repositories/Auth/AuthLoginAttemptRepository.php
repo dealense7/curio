@@ -17,7 +17,6 @@ class AuthLoginAttemptRepository extends Repository implements AuthLoginAttemptR
         $attempt = $this->getModel();
         $attempt->fill([
             'user_id'      => $user->getKey(),
-            'company_id'   => $user->getAttribute('company_id'),
             'login'        => $user->getEmail(),
             'succeeded'    => true,
             'ip_address'   => $ipAddress,
