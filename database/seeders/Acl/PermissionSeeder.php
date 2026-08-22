@@ -6,6 +6,7 @@ namespace Database\Seeders\Acl;
 
 use App\Models\Acl\Permission;
 use App\Models\General\Country\Country;
+use App\Models\Retailer\Retailer;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Spatie\Permission\PermissionRegistrar;
@@ -23,6 +24,15 @@ class PermissionSeeder extends Seeder
                 'create' => 'Create countries',
                 'update' => 'Update countries',
                 'delete' => 'Delete countries',
+            ],
+        ],
+        Retailer::PERMISSIONS_SCOPE => [
+            'display_name' => 'Retailer management',
+            'permissions'  => [
+                'read'   => 'View retailers',
+                'create' => 'Create retailers',
+                'update' => 'Update retailers',
+                'delete' => 'Delete retailers',
             ],
         ],
     ];

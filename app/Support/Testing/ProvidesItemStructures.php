@@ -81,6 +81,23 @@ trait ProvidesItemStructures
         ],
     ];
 
+    private array $retailerStructure = [
+        'type',
+        'id',
+        'attributes' => [
+            'name',
+            'slug',
+            'domain',
+            'country_id',
+            'currency_id',
+            'is_active',
+            'scraping_enabled',
+            'last_scraped_at',
+            'created_at',
+            'updated_at',
+        ],
+    ];
+
     public function getSuccessStructure(): array
     {
         return $this->successStructure;
@@ -113,6 +130,15 @@ trait ProvidesItemStructures
     public function getCurrencyStructure(): array
     {
         return $this->currencyStructure;
+    }
+
+    public function getRetailerStructure(array $relations = []): array
+    {
+        $structure = $this->retailerStructure;
+
+        $this->includeNestedRelations($structure, $relations);
+
+        return $structure;
     }
 
     protected function includeNestedRelations(array &$item, array $relations): void

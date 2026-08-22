@@ -8,6 +8,7 @@ use App\Models\Acl\Permission;
 use App\Models\Acl\Role;
 use App\Models\General\Country\Country;
 use App\Models\General\Currency;
+use App\Models\Retailer\Retailer;
 use App\Models\User;
 use Faker\Factory;
 use Faker\Generator;
@@ -107,6 +108,11 @@ class ProvidesTestingData
     public static function createCurrencyRandomItem(array $params = [], int $count = 1): Collection
     {
         return Currency::factory()->count($count)->create($params);
+    }
+
+    public static function createRetailerRandomItem(array $params = [], int $count = 1): Collection
+    {
+        return Retailer::factory()->count($count)->create($params);
     }
 
     public static function getFaker(): Generator

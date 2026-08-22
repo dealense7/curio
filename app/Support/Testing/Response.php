@@ -51,6 +51,26 @@ class Response extends TestResponse
         return $this;
     }
 
+    public function assertJsonDataCount(int $count): self
+    {
+        Assert::assertCount($count, $this->getDecodedContent()['data'] ?? []);
+
+        return $this;
+    }
+
+    /** @param array{page: int, perPage: int, count: int, total: int} $data */
+    public function assertJsonDataPagination(array $data): self
+    {
+        $pagination = $this->getDecodedContent()['meta']['pagination'] ?? [];
+
+        Assert::assertSame($data['page'], $pagination['currentPage'] ?? null);
+        Assert::assertSame($data['perPage'], $pagination['perPage'] ?? null);
+        Assert::assertSame($data['count'], $pagination['count'] ?? null);
+        Assert::assertSame($data['total'], $pagination['total'] ?? null);
+
+        return $this;
+    }
+
     public function assertJsonDataCollectionStructure(array $data, bool $includePagerMeta = true): self
     {
         $structure         = self::$successResponseStructure;

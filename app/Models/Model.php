@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Support\Collection;
 use App\Support\Resources\Contracts\TransformableContract;
+use App\Support\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Support\Carbon;
@@ -13,6 +14,7 @@ use Illuminate\Support\Carbon;
 abstract class Model extends EloquentModel implements TransformableContract
 {
     use HasFactory;
+    use Sortable;
 
     public const string PERMISSIONS_SCOPE = 'models';
 

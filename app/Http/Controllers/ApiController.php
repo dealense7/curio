@@ -8,6 +8,8 @@ use App\Support\Resources\Responses\ApiResponse;
 use App\Support\Resources\Responses\ArrayResource;
 use App\Support\Resources\Responses\ErrorResource;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class ApiController extends Controller
@@ -23,6 +25,35 @@ class ApiController extends Controller
     protected function resourceNotFound(?string $message = null): JsonResponse
     {
         return $this->error($message ?? __('api.item_not_found'), ResponseAlias::HTTP_NOT_FOUND);
+    }
+
+    protected function throwCustomValidationError(string $field, string $error): never
+    {
+        throw ValidationException::withMessages([$field => $error]);
+    }
+
+    protected function getInputFilters(Request $request): array
+    {
+        return (array) $request->input('filters');
+    }
+
+    protected function getInputPage(Request $request): int
+    {
+        return (int) $request->input('page', 1);
+    }
+
+    protected function getInputPerPage(Request $request): ?int
+    {
+        $perPage = $request->input('perPage');
+
+        return $perPage === null ? null : (int) $perPage;
+    }
+
+    protected function getInputSort(Request $request): ?string
+    {
+        $sort = $request->input('sort');
+
+        return is_string($sort) ? $sort : null;
     }
 
     protected function success(string $message, array $data = [], int $code = 200, array $headers = []): JsonResponse
