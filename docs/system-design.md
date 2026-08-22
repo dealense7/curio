@@ -1,5 +1,7 @@
 # System Design Guidelines
 
+This document defines stable architectural principles and business boundaries. Concrete Laravel implementation patterns belong in [`technical-design.md`](technical-design.md), while executable structural rules belong in the architecture test suite.
+
 ## Application architecture
 
 Use the project’s established layering for business operations:
@@ -22,6 +24,7 @@ repository or cache repository
 - Let cache repositories delegate writes to the raw repository and invalidate their own cache.
 - Keep transactions in services around business operations.
 - Do not add service methods that only wrap a single permission check; keep simple permission checks direct and readable.
+- Keep architecture rules enforceable: when a rule is stable and machine-checkable, add an architecture test for it.
 
 ## Readability
 
@@ -86,6 +89,15 @@ repository or cache repository
 - Keep request data readable by assigning filters, sorting, pagination, or payload values to a named `$data` variable before calling the request helper.
 - Keep response assertions as separate statements. Avoid long assertion chains so each expected response property is easy to scan and maintain.
 - Resource relationship methods should follow the established resource pattern: use `new RelatedResource($this->whenLoaded('relation'))` for singular relations and `new JsonResourceCollection($this->whenLoaded('relation'), RelatedResource::class)` for collections. Do not conditionally inspect or manually unwrap loaded relations in the resource.
+- Resources should expose model values through the model's typed getters and should not duplicate model conversion logic.
+
+## Architecture Testing
+
+- Architecture tests live under `tests/Architecture` and must not require a database connection.
+- Use Pest architecture expectations for stable namespace and dependency boundaries.
+- Controllers must depend on service contracts, services must depend on repository contracts, and application code must not bypass the established layers with concrete cross-layer dependencies.
+- Shared infrastructure belongs in shared namespaces; domain-specific classes must remain grouped by business domain.
+- Keep feature behavior in integration tests; use architecture tests for structure and dependency direction.
 
 ## Domain-oriented organization
 
