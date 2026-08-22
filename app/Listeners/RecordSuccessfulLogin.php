@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Contracts\Repositories\Auth\AuthLoginAttemptRepositoryContract;
-use App\Models\User;
+use App\Models\User\User;
 use App\Support\Auth\Passport\Contracts\UserRepositoryContract;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;

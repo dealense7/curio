@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Enums\UserContactType;
-use App\Enums\UserStatus;
-use App\Models\User;
-use App\Models\UserContact;
+use App\Enums\User\UserContactType;
+use App\Enums\User\UserStatus;
+use App\Models\User\User;
+use App\Models\User\UserContact;
 use Illuminate\Database\QueryException;
 use Tests\Integration\Auth\ModelTestCase;
 

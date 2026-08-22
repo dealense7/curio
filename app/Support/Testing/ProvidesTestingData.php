@@ -6,11 +6,11 @@ namespace App\Support\Testing;
 
 use App\Models\Acl\Permission;
 use App\Models\Acl\Role;
-use App\Models\Category\Category;
+use App\Models\General\Category\Category;
 use App\Models\General\Country\Country;
 use App\Models\General\Currency;
 use App\Models\Retailer\Retailer;
-use App\Models\User;
+use App\Models\User\User;
 use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Support\Collection;

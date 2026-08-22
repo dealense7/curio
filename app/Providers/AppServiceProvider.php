@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Listeners\RecordSuccessfulLogin;
-use App\Models\Category\Category;
+use App\Models\General\Category\Category;
 use App\Models\General\Country\Country;
 use App\Models\Retailer\Retailer;
-use App\Models\User;
+use App\Models\User\User;
 use App\Observers\UserObserver;
-use App\Policies\Category\CategoryPolicy;
+use App\Policies\General\Category\CategoryPolicy;
 use App\Policies\General\Country\CountryPolicy;
 use App\Policies\RetailerPolicy;
 use Illuminate\Auth\Events\Login;

@@ -91,6 +91,14 @@ repository or cache repository
 
 Organize application code by both layer and business domain. When a class belongs to a domain, place it under that domain rather than in a flat global namespace. This applies to services, service contracts, repository contracts, repositories, cache repositories, policies, events, middleware, jobs, listeners, requests, and resources.
 
+Global/reference domains belong under the `General` grouping, for example `App\Models\General\Category\Category`, `App\Repositories\General\Category`, and `App\Services\General\Category`. Keep admin HTTP classes under their admin layer, such as `App\Http\Controllers\Admin\Category` and `App\Http\Requests\Admin\Category`.
+
+Shared reusable model traits belong under `App\Support\Traits`. Do not place traits under `App\Models\Concerns`; model namespaces are for models, while support traits are shared infrastructure.
+
+User-domain models belong under `App\Models\User` (`User`, contacts, and future user submodels). Authentication-specific models belong under `App\Models\Auth`. Application model contracts belong under `App\Contracts\Models\{Domain}`; Passport framework contracts remain under `App\Support\Auth\Passport\Contracts` and are extended by the application contract when needed.
+
+Domain enums follow the same grouping, so User enums belong under `App\Enums\User` and General/reference enums under `App\Enums\General`.
+
 CRUD business models use Laravel soft deletes when deletion must remain recoverable: add `$table->softDeletes()` in the migration and `SoftDeletes` to the model. Membership lifecycle records use their explicit `archived_at` lifecycle field instead of soft deletes.
 
 New business models should include a domain seeder under `database/seeders/{Domain}` when development or test environments need representative records. Register the seeder in `DatabaseSeeder`, seed required foreign-key references from existing records, and use idempotent operations such as `updateOrCreate` so repeated seeding is safe.

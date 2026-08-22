@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Admin\Category;
 
-use App\Models\Category\Category;
+use App\Models\General\Category\Category;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\Integration\IntegrationTestCase;
 

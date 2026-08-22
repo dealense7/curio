@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Support\Auth\Passport\Repositories;
 
-use App\Enums\UserStatus;
-use App\Models\User;
+use App\Enums\User\UserStatus;
+use App\Models\User\User;
 use App\Support\Auth\Passport\Contracts\UserContract;
 use App\Support\Auth\Passport\Contracts\UserRepositoryContract;
 use Exception;

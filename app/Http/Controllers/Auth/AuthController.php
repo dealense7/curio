@@ -8,7 +8,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\Auth\TokenRequest;
 use App\Http\Resources\Auth\AuthTokenResource;
 use App\Http\Resources\Auth\CurrentUserResource;
-use App\Models\User;
+use App\Models\User\User;
 use App\Support\Auth\Passport\Contracts\AuthServiceContract;
 use App\Support\Resources\Responses\ApiResponse;
 use App\Support\Resources\Responses\ArrayResource;

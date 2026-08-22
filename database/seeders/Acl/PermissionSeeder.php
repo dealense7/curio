@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders\Acl;
 
 use App\Models\Acl\Permission;
-use App\Models\Category\Category;
+use App\Models\General\Category\Category;
 use App\Models\General\Country\Country;
 use App\Models\Retailer\Retailer;
 use Illuminate\Database\Seeder;

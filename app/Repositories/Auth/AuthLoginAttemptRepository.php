@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Repositories\Auth;
 
 use App\Contracts\Repositories\Auth\AuthLoginAttemptRepositoryContract;
-use App\Models\AuthLoginAttempt;
-use App\Models\User;
+use App\Models\Auth\AuthLoginAttempt;
+use App\Models\User\User;
 use App\Repositories\Repository;
 use Illuminate\Support\Carbon;
 

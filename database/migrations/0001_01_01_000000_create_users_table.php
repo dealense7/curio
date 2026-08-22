@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Enums\UserStatus;
+use App\Enums\User\UserStatus;
 use App\Support\Database\BlueprintMacros;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;

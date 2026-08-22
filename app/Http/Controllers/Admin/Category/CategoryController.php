@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin\Category;
 
-use App\Contracts\Services\Category\CategoryServiceContract;
+use App\Contracts\Services\General\Category\CategoryServiceContract;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Admin\Category\IndexCategoryRequest;
 use App\Http\Requests\Admin\Category\StoreCategoryRequest;
 use App\Http\Requests\Admin\Category\UpdateCategoryRequest;
-use App\Http\Resources\Category\CategoryResource;
+use App\Http\Resources\General\Category\CategoryResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 

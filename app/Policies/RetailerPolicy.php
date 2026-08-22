@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Models\Retailer\Retailer;
-use App\Models\User;
+use App\Models\User\User;
 use Illuminate\Auth\Access\Response;
 
 class RetailerPolicy extends Policy

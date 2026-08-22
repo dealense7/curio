@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Enums\UserContactType;
+use App\Enums\User\UserContactType;
 use App\Support\Database\BlueprintMacros;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;

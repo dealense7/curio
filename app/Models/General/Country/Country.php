@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\General\Country;
 
-use App\Models\Concerns\HasPublicId;
+use App\Support\Traits\HasPublicId;
 use App\Models\Model;
 use App\Support\Resources\Contracts\UuidAsPrimaryContract;
 use Database\Factories\CountryFactory;

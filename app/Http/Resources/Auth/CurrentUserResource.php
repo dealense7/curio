@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Resources\Auth;
 
-use App\Http\Resources\UserContactResource;
-use App\Models\User;
+use App\Http\Resources\User\UserContactResource;
+use App\Models\User\User;
 use App\Support\Resources\JsonResource;
 use App\Support\Resources\JsonResourceCollection;
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Policies\General\Country;
 
 use App\Models\General\Country\Country;
-use App\Models\User;
+use App\Models\User\User;
 use App\Policies\Policy;
 use Illuminate\Auth\Access\Response;
 

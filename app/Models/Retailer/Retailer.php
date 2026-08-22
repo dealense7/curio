@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models\Retailer;
 
-use App\Models\Concerns\HasPublicId;
+use App\Support\Traits\HasPublicId;
 use App\Models\General\Country\Country;
 use App\Models\General\Currency;
 use App\Models\Model;
-use App\Models\User;
+use App\Models\User\User;
 use App\Support\Resources\Contracts\UuidAsPrimaryContract;
 use Database\Factories\Retailer\RetailerFactory;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;

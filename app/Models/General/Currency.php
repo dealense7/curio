@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Models\General;
 
 use App\Enums\General\Currency as CurrencyEnum;
-use App\Models\Concerns\HasPublicId;
+use App\Support\Traits\HasPublicId;
 use App\Models\Model;
 
 class Currency extends Model

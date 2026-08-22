@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Support\Auth\Passport;
 
-use App\Models\User;
+use App\Models\User\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Laravel\Passport\PassportUserProvider;
 

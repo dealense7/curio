@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Enums\UserStatus;
+use App\Enums\User\UserStatus;
 use App\Support\Testing\ProvidesTestingData;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;

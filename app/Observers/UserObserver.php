@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Observers;
 
-use App\Enums\UserContactType;
-use App\Models\User;
+use App\Enums\User\UserContactType;
+use App\Models\User\User;
 
 class UserObserver
 {

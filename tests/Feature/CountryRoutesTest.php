@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Models\Acl\Permission;
 use App\Models\General\Country\Country;
 use App\Models\General\Country\CountryPhoneCode;
-use App\Models\User;
+use App\Models\User\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 
