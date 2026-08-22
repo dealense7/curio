@@ -89,6 +89,8 @@ repository or cache repository
 
 Organize application code by both layer and business domain. When a class belongs to a domain, place it under that domain rather than in a flat global namespace. This applies to services, service contracts, repository contracts, repositories, cache repositories, policies, events, middleware, jobs, listeners, requests, and resources.
 
+New business models should include a domain seeder under `database/seeders/{Domain}` when development or test environments need representative records. Register the seeder in `DatabaseSeeder`, seed required foreign-key references from existing records, and use idempotent operations such as `updateOrCreate` so repeated seeding is safe.
+
 For any domain, use corresponding namespaces such as:
 
 - `App\Contracts\Services\{Domain}`

@@ -8,6 +8,7 @@ use Database\Seeders\Acl\PermissionSeeder;
 use Database\Seeders\Acl\RoleSeeder;
 use Database\Seeders\General\CountrySeeder;
 use Database\Seeders\General\CurrencySeeder;
+use Database\Seeders\Retailer\RetailerSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             CountrySeeder::class,
             CurrencySeeder::class,
+            RetailerSeeder::class,
         ]);
     }
 }
